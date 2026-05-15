@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPosts } from "@/app/lib/posts";
+import rehypePrettyCode from "rehype-pretty-code";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -42,8 +43,22 @@ export default async function PostPage({ params }: Props) {
         <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
         <p className="text-zinc-400 text-sm">{data.date}</p>
       </div>
-      <div className="prose max-w-none">
-        <MDXRemote source={content} />
+      <div className="prose prose-zinc max-w-none">
+        <MDXRemote
+          source={content}
+          options={{
+            mdxOptions: {
+              rehypePlugins: [
+                [
+                  rehypePrettyCode,
+                  {
+                    theme: "github-dark",
+                  },
+                ],
+              ],
+            },
+          }}
+        />
       </div>
     </div>
   );
