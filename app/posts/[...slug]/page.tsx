@@ -16,11 +16,20 @@ export async function generateStaticParams() {
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
   const filePath = path.join(process.cwd(), "app", "posts", ...slug) + ".mdx";
+
+  if (!fs.existsSync(filePath)) {
+    return (
+      <div className="max-w-3xl mx-auto pt-12">
+        <h1 className="text-2xl font-bold">페이지를 찾을 수 없습니다</h1>
+      </div>
+    );
+  }
+
   const fileContents = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(fileContents);
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto pt-12 px-8">
       <div className="mb-8">
         <div className="flex gap-2 mb-4">
           <span className="text-xs px-2 py-1 bg-zinc-100 rounded-full text-zinc-600">

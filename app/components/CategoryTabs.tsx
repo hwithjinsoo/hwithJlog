@@ -47,7 +47,7 @@ export default function CategoryTabs({ posts }: Props) {
         {filtered.map((post) => (
           <Link
             key={post.slug.join("/")}
-            href={`/${post.slug.join("/")}`}
+            href={`/posts/${post.slug.join("/")}`}
             className="block p-6 bg-white rounded-xl border border-zinc-200 hover:border-zinc-400 transition-colors"
           >
             <div className="flex gap-2 mb-3">

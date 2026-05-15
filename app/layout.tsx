@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "./components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,17 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full flex">
-        {/* 사이드바 */}
-        <aside className="w-64 min-h-screen bg-zinc-900 text-white p-4">
-          <h1 className="text-xl font-bold mb-6">hwithJlog</h1>
-          {/* 카테고리 트리 나중에 여기 */}
-        </aside>
-
-        {/* 메인 콘텐츠 */}
-        <main className="flex-1 p-8 bg-zinc-50">
-          {children}
-        </main>
+      <body className="min-h-full bg-zinc-50">
+        <Header />
+        {children}
       </body>
     </html>
   );
