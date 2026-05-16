@@ -43,15 +43,15 @@ export default function Header() {
             {ctfOpen && (
               <div className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10">
                 {ctfSubcategories.map((sub) => (
-                  <Link
-                    key={sub}
-                    href={`/?category=ctf&sub=${sub}`}
-                    onClick={() => setCtfOpen(false)}
-                    className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
-                  >
-                    {sub}
-                  </Link>
-                ))}
+                <Link
+                key={sub}
+                href={`/ctf/${sub}`}
+                onClick={() => setCtfOpen(false)}
+                className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
+            >
+                {sub}
+                </Link>
+                                ))}
               </div>
             )}
           </div>
