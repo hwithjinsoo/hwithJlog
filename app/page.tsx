@@ -1,20 +1,24 @@
 import { getAllPosts } from "./lib/posts";
-import CategoryTabs from "./components/CategoryTabs";
 import Link from "next/link";
+import CTFGraph from "./components/CTFGraph";
 
 export default function Home() {
   const posts = getAllPosts();
   const recentCtfPosts = posts.filter((post) => post.category === "ctf").slice(0, 5);
+  const ctfPosts = posts.filter((post) => post.category === "ctf");
 
   return (
     <div className="max-w-6xl mx-auto px-8 pt-12 flex gap-12">
       {/* 왼쪽 메인 */}
       <div className="flex-1 min-w-0">
+        {/* 그래프 영역 */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">hwithJlog</h1>
-          <p className="text-zinc-500">CTF 풀이, 컴퓨터 지식, 일상을 기록합니다.</p>
+          <CTFGraph posts={ctfPosts} />
         </div>
-        <CategoryTabs posts={posts} />
+
+        {/* 하단 - 나중에 채울 영역 */}
+        <div>
+        </div>
       </div>
 
       {/* 오른쪽 사이드바 */}
