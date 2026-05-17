@@ -5,9 +5,13 @@ import Image from "next/image";
 import { useState } from "react";
 
 const ctfSubcategories = ["web", "system", "forensics"];
+const csSubcategories = ["architecture", "network", "os"];
+const dailySubcategories = ["ex1", "ex2"];
 
 export default function Header() {
   const [ctfOpen, setCtfOpen] = useState(false);
+  const [csOpen, setCsOpen] = useState(false);
+  const [dailyOpen, setDailyOpen] = useState(false);
 
   return (
     <header className="border-b border-zinc-200 bg-white">
@@ -19,8 +23,7 @@ export default function Header() {
             alt="hwithJlog 아이콘"
             className="rounded-full object-cover"
             width={40}
-            height={30   
-            }
+            height={30}
           />
           <span className="text-xl font-bold">hwithJlog</span>
         </Link>
@@ -43,25 +46,68 @@ export default function Header() {
             {ctfOpen && (
               <div className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10">
                 {ctfSubcategories.map((sub) => (
-                <Link
-                key={sub}
-                href={`/ctf/${sub}`}
-                onClick={() => setCtfOpen(false)}
-                className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
-            >
-                {sub}
-                </Link>
-                                ))}
+                  <Link
+                    key={sub}
+                    href={`/ctf/${sub}`}
+                    onClick={() => setCtfOpen(false)}
+                    className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
+                  >
+                    {sub}
+                  </Link>
+                ))}
               </div>
             )}
           </div>
 
-          <Link href="/#cs" className="hover:text-black transition-colors">
-            CS
-          </Link>
-          <Link href="/#daily" className="hover:text-black transition-colors">
-            일상
-          </Link>
+          {/* CS 드롭다운 */}
+          <div className="relative">
+            <button
+              onClick={() => setCsOpen(!csOpen)}
+              className="flex items-center gap-1 hover:text-black transition-colors"
+            >
+              CS
+              <span className="text-xs">{csOpen ? "▲" : "▼"}</span>
+            </button>
+            {csOpen && (
+              <div className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10">
+                {csSubcategories.map((sub) => (
+                  <Link
+                    key={sub}
+                    href={`/cs/${sub}`}
+                    onClick={() => setCsOpen(false)}
+                    className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
+                  >
+                    {sub}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 일상 드롭다운 */}
+          <div className="relative">
+            <button
+              onClick={() => setDailyOpen(!dailyOpen)}
+              className="flex items-center gap-1 hover:text-black transition-colors"
+            >
+              일상
+              <span className="text-xs">{dailyOpen ? "▲" : "▼"}</span>
+            </button>
+            {dailyOpen && (
+              <div className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10">
+                {dailySubcategories.map((sub) => (
+                  <Link
+                    key={sub}
+                    href={`/daily/${sub}`}
+                    onClick={() => setDailyOpen(false)}
+                    className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
+                  >
+                    {sub}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
       </div>
     </header>
