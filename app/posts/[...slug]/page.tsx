@@ -30,7 +30,7 @@ export default async function PostPage({ params }: Props) {
   const { data, content } = matter(fileContents);
 
   return (
-    <div className="max-w-3xl mx-auto pt-12 px-8">
+    <div className="max-w-5xl mx-auto pt-12 px-8">
       <div className="mb-8">
         <div className="flex gap-2 mb-4">
           <span className="text-xs px-2 py-1 bg-zinc-100 rounded-full text-zinc-600">
@@ -52,7 +52,8 @@ export default async function PostPage({ params }: Props) {
                 [
                   rehypePrettyCode,
                   {
-                    theme: "github-dark",
+                    theme: "github-light",
+                    showLineNumbers: true,
                   },
                 ],
               ],

@@ -44,7 +44,10 @@ export default function Header() {
               <span className="text-xs">{ctfOpen ? "▲" : "▼"}</span>
             </button>
             {ctfOpen && (
-              <div className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10">
+              <div 
+                className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10"
+                onMouseLeave={() => setCtfOpen(false)}
+              >
                 {ctfSubcategories.map((sub) => (
                   <Link
                     key={sub}
@@ -69,7 +72,10 @@ export default function Header() {
               <span className="text-xs">{csOpen ? "▲" : "▼"}</span>
             </button>
             {csOpen && (
-              <div className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10">
+              <div 
+                className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10"
+                onMouseLeave={() => setCsOpen(false)}
+              >
                 {csSubcategories.map((sub) => (
                   <Link
                     key={sub}
@@ -94,7 +100,10 @@ export default function Header() {
               <span className="text-xs">{dailyOpen ? "▲" : "▼"}</span>
             </button>
             {dailyOpen && (
-              <div className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10">
+              <div 
+                className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10"
+                onMouseLeave={() => setDailyOpen(false)}
+              >
                 {dailySubcategories.map((sub) => (
                   <Link
                     key={sub}
