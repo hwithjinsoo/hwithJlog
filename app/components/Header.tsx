@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const ctfSubcategories = ["web", "system", "forensics"];
 const csSubcategories = ["architecture", "network", "os"];
@@ -12,6 +13,16 @@ export default function Header() {
   const [ctfOpen, setCtfOpen] = useState(false);
   const [csOpen, setCsOpen] = useState(false);
   const [dailyOpen, setDailyOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (prefix: string) => pathname.startsWith(prefix);
+
+  const navClass = (prefix: string) =>
+    `flex items-center gap-1 transition-colors pb-1 ${
+      isActive(prefix)
+        ? "text-black font-semibold border-b-2 border-black"
+        : "text-zinc-400 hover:text-zinc-600"
+    }`;
 
   return (
     <header className="border-b border-zinc-200 bg-white">
@@ -29,17 +40,17 @@ export default function Header() {
         </Link>
 
         {/* 네비 */}
-        <nav className="flex items-center gap-6 text-sm text-zinc-500">
-          <Link href="/" className="hover:text-black transition-colors">
+        <nav className="flex items-center gap-6 text-sm">
+          <Link href="/" className={pathname === "/" ? "text-black font-semibold border-b-2 border-black pb-1" : "text-zinc-400 hover:text-zinc-600 pb-1 transition-colors"}>
             Home
           </Link>
 
           {/* CTF 드롭다운 */}
           <div className="relative">
             <button
-              onClick={() => setCtfOpen(!ctfOpen)}
-              className="flex items-center gap-1 hover:text-black transition-colors"
-            >
+                onClick={() => { setCtfOpen(!ctfOpen); setCsOpen(false); setDailyOpen(false); }}
+                className={navClass("/ctf")}
+              >
               CTF
               <span className="text-xs">{ctfOpen ? "▲" : "▼"}</span>
             </button>
@@ -65,8 +76,8 @@ export default function Header() {
           {/* CS 드롭다운 */}
           <div className="relative">
             <button
-              onClick={() => setCsOpen(!csOpen)}
-              className="flex items-center gap-1 hover:text-black transition-colors"
+              onClick={() => { setCsOpen(!csOpen); setCtfOpen(false); setDailyOpen(false); }}
+              className={navClass("/cs")}
             >
               CS
               <span className="text-xs">{csOpen ? "▲" : "▼"}</span>
@@ -93,8 +104,8 @@ export default function Header() {
           {/* 일상 드롭다운 */}
           <div className="relative">
             <button
-              onClick={() => setDailyOpen(!dailyOpen)}
-              className="flex items-center gap-1 hover:text-black transition-colors"
+              onClick={() => { setDailyOpen(!dailyOpen); setCtfOpen(false); setCsOpen(false); }}
+              className={navClass("/daily")}
             >
               일상
               <span className="text-xs">{dailyOpen ? "▲" : "▼"}</span>

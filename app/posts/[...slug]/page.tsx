@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPosts } from "@/app/lib/posts";
 import rehypePrettyCode from "rehype-pretty-code";
+import PostHeader from "@/app/components/PostHeader";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -30,7 +31,9 @@ export default async function PostPage({ params }: Props) {
   const { data, content } = matter(fileContents);
 
   return (
-    <div className="max-w-5xl mx-auto pt-12 px-8">
+    <>
+      <PostHeader title={data.title} />
+    <div className="max-w-5xl mx-auto pt-20 px-8 pb-24"> {/* 본문 패딩 및 간격 조정 */}
       <div className="mb-8">
         <div className="flex gap-2 mb-4">
           <span className="text-xs px-2 py-1 bg-zinc-100 rounded-full text-zinc-600">
@@ -62,5 +65,6 @@ export default async function PostPage({ params }: Props) {
         />
       </div>
     </div>
+   </>
   );
 }
