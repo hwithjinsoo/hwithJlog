@@ -51,3 +51,15 @@ code {
   text-align: right;
   color: #999;
 }
+
+/* MDX 스타일 선언 */
+.prose h2::before {
+  content: "• ";
+  color: black;
+  
+}
+
+.prose h2,
+.prose h2::before {
+  color: #A3B18A;
+}
