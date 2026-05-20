@@ -39,7 +39,7 @@ export default function CTFGraph({ posts }: Props) {
 
   return (
     <div className="bg-white rounded-2xl p-8">
-      <h2 className="text-lg font-semibold mb-6 text-black">CTF 풀이 현황</h2>
+      <h2 className="text-lg font-semibold mb-6 pl-16" style={{color: "#495057"}}>CTF 현황</h2>
       <ResponsiveContainer width="100%" height={150}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />

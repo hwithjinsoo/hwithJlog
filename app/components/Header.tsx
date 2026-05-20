@@ -7,12 +7,10 @@ import { usePathname } from "next/navigation";
 
 const ctfSubcategories = ["web", "system", "forensics"];
 const csSubcategories = ["architecture", "network", "os"];
-const dailySubcategories = ["ex1", "ex2"];
 
 export default function Header() {
   const [ctfOpen, setCtfOpen] = useState(false);
   const [csOpen, setCsOpen] = useState(false);
-  const [dailyOpen, setDailyOpen] = useState(false);
   const pathname = usePathname();
 
   const isActive = (prefix: string) => pathname.startsWith(prefix);
@@ -48,7 +46,7 @@ export default function Header() {
           {/* CTF 드롭다운 */}
           <div className="relative">
             <button
-                onClick={() => { setCtfOpen(!ctfOpen); setCsOpen(false); setDailyOpen(false); }}
+                onClick={() => { setCtfOpen(!ctfOpen); setCsOpen(false);}}
                 className={navClass("/ctf")}
               >
               CTF
@@ -76,7 +74,7 @@ export default function Header() {
           {/* CS 드롭다운 */}
           <div className="relative">
             <button
-              onClick={() => { setCsOpen(!csOpen); setCtfOpen(false); setDailyOpen(false); }}
+              onClick={() => { setCsOpen(!csOpen); setCtfOpen(false); }}
               className={navClass("/cs")}
             >
               CS
@@ -101,33 +99,6 @@ export default function Header() {
             )}
           </div>
 
-          {/* 일상 드롭다운 */}
-          <div className="relative">
-            <button
-              onClick={() => { setDailyOpen(!dailyOpen); setCtfOpen(false); setCsOpen(false); }}
-              className={navClass("/daily")}
-            >
-              일상
-              <span className="text-xs">{dailyOpen ? "▲" : "▼"}</span>
-            </button>
-            {dailyOpen && (
-              <div 
-                className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10"
-                onMouseLeave={() => setDailyOpen(false)}
-              >
-                {dailySubcategories.map((sub) => (
-                  <Link
-                    key={sub}
-                    href={`/daily/${sub}`}
-                    onClick={() => setDailyOpen(false)}
-                    className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
-                  >
-                    {sub}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
         </nav>
       </div>
     </header>

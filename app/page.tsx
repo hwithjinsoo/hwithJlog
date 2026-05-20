@@ -2,6 +2,7 @@ import { getAllPosts } from "./lib/posts";
 import Link from "next/link";
 import CTFGraph from "./components/CTFGraph";
 import RunningCat from "./components/RunningCat";
+import IntroCard from "./components/IntroCard";
 
 export default function Home() {
   const posts = getAllPosts();
@@ -10,15 +11,15 @@ export default function Home() {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto px-8 pt-12 flex gap-12 pb-32">
+     <div className="max-w-6xl mx-auto px-8 pt-12 flex gap-12 pb-32 items-start">
         {/* 왼쪽 메인 */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex-col gap-12">
           {/* 그래프 영역 */}
           <div className="mb-12">
             <CTFGraph posts={ctfPosts} />
-          </div>
-
-          {/* 중단 - 나중에 채울 영역 */}
+            <IntroCard />
+            </div>
+            
           <div>
           </div>
         </div>
