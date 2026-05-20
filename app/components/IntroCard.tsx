@@ -58,24 +58,22 @@ export default function IntroCard() {
       </div>
 
       {/* 텍스트 콘텐츠 */}
-      <div className="relative z-30 w-full text-left pl-60 pr-32 pb-24 pt-10">
-        <h2 className="text-lg font-semibold text-zinc-800 mb-2 leading-snug">
-          Hello, World!
-        </h2>
-        <p className="text-sm text-zinc-500 leading-relaxed mb-5">
+      <div className="relative z-30 w-full text-left pl-35 pr-32 pb-24 pt-10">
+        <div className="flex flex-col items-center mb-4">
+          <svg width="48" height="28" viewBox="0 0 48 28" xmlns="http://www.w3.org/2000/svg" className="mb-3">
+            <path d="M4,24 Q4,4 24,4 Q44,4 44,24" fill="none" stroke="#D4547A" strokeWidth="4" strokeLinecap="round"/>
+            <path d="M8,24 Q8,9 24,9 Q40,9 40,24" fill="none" stroke="#e07090" strokeWidth="3.5" strokeLinecap="round"/>
+            <path d="M12,24 Q12,13 24,13 Q36,13 36,24" fill="none" stroke="#e896b0" strokeWidth="3" strokeLinecap="round"/>
+          </svg>
+          <p className="text-sm mb-1" style={{ color: "#D4547A" }}>Hello, World!</p>
+        </div>
+        <p className="text-sm text-zinc-500 leading-relaxed mb-5 text-center">
           • 다양한 분야의 CTF 문제 풀이과정을 올릴 블로그에요
           <br />
           • 계속해서 다양한 기능이나 목록을 추가할 예정이에요
           <br />
           • next.js로 개발하고 vercel로 배포 했어요
         </p>
-        <div className="flex gap-3">
-          {["CTF 풀이", "CS 정리"].map((tag) => (
-            <span key={tag} className="text-xs text-zinc-400 border border-zinc-200 px-3 py-1 rounded-full">
-              {tag}
-            </span>
-          ))}
-        </div>
       </div>
 
       {/* 언덕 SVG */}
