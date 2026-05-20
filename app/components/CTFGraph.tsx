@@ -38,7 +38,7 @@ export default function CTFGraph({ posts }: Props) {
     }));
 
   return (
-    <div className="bg-white rounded-2xl p-8">
+    <div className="bg-white rounded-2xl p-8 border border-zinc-200">
       <h2 className="text-lg font-semibold mb-6 pl-16" style={{color: "#495057"}}>CTF 현황</h2>
       <ResponsiveContainer width="100%" height={150}>
         <LineChart data={data}>

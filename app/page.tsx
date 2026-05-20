@@ -13,9 +13,9 @@ export default function Home() {
     <>
      <div className="max-w-6xl mx-auto px-8 pt-12 flex gap-12 pb-32 items-start">
         {/* 왼쪽 메인 */}
-        <div className="flex-1 min-w-0 flex-col gap-12">
+        <div className="flex-1 min-w-0 flex-col gap-6">
           {/* 그래프 영역 */}
-          <div className="mb-12">
+          <div className="mb-6">
             <CTFGraph posts={ctfPosts} />
             <IntroCard />
             </div>
