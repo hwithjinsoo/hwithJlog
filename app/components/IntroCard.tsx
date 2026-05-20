@@ -58,7 +58,7 @@ export default function IntroCard() {
       </div>
 
       {/* 텍스트 콘텐츠 */}
-      <div className="relative z-30 w-full text-left pl-35 pr-32 pb-24 pt-10">
+      <div className="relative z-30 w-full text-left pl-8 pr-8 md:pl-35 md:pr-32 pb-24 pt-10">
         <div className="flex flex-col items-center mb-4">
           <svg width="48" height="28" viewBox="0 0 48 28" xmlns="http://www.w3.org/2000/svg" className="mb-3">
             <path d="M4,24 Q4,4 24,4 Q44,4 44,24" fill="none" stroke="#D4547A" strokeWidth="4" strokeLinecap="round"/>
