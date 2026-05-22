@@ -12,7 +12,7 @@ export default function PostHeader({ title }: Props) {
   const router = useRouter();
 
   useEffect(() => {
-    const headings = document.querySelectorAll("h2, h3");
+    const headings = document.querySelectorAll("h2, h2");
 
     const observer = new IntersectionObserver(
       (entries) => {
