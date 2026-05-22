@@ -39,17 +39,19 @@ export default function CTFGraph({ posts }: Props) {
 
   return (
     <div className="bg-white rounded-2xl p-8 border border-zinc-200">
-      <h2 className="text-lg font-semibold mb-6 pl-16" style={{color: "#495057"}}>CTF 현황</h2>
-      <ResponsiveContainer width="100%" height={150}>
-        <LineChart data={data}>
+      <h2 className="text-sm mb-6" style={{ marginLeft: "50px", color: "#D4547A" }}>CTF Overview</h2>
+      {/*그래프 위치 조정*/}
+      <ResponsiveContainer width="95%" height={150}>
+        <LineChart data={data} margin={{ left: 12, right: 20}}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
-          <XAxis dataKey="date" stroke="#71717a" tick={{ fontSize: 12 }} />
+          <XAxis dataKey="date" stroke="#71717a" tick={{ fontSize: 10}} />
           <YAxis stroke="#71717a" tick={{ fontSize: 12 }} allowDecimals={false} />
           <Tooltip
             contentStyle={{ backgroundColor: "#fff", border: "1px solid #e4e4e7" }}
             labelStyle={{ color: "#000" }}
           />
-          <Legend />
+           {/*텍스트 위치 조정*/}
+          <Legend wrapperStyle={{ marginTop: "40px" }}/>
           <Line type="monotone" dataKey="web" stroke="#4f86c6" strokeWidth={2} dot={{ r: 4 }} />
           <Line type="monotone" dataKey="system" stroke="#e07b5a" strokeWidth={2} dot={{ r: 4 }} />
           <Line type="monotone" dataKey="forensics" stroke="#2d6a4f" strokeWidth={2} dot={{ r: 4 }} />
