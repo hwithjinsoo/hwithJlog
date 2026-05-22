@@ -34,7 +34,7 @@ export default function Header() {
             width={40}
             height={30}
           />
-          <span className="text-xl font-bold">hwithJlog</span>
+          <span className="text-base">hwithJlog</span>
         </Link>
 
         {/* 네비 */}
@@ -54,7 +54,7 @@ export default function Header() {
             </button>
             {ctfOpen && (
               <div 
-                className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10"
+                className="absolute top-8 left-0 bg-white/40 backdrop-blur-sm border border-white/40 rounded-lg py-2 w-32 z-10"
                 onMouseLeave={() => setCtfOpen(false)}
               >
                 {ctfSubcategories.map((sub) => (
@@ -62,7 +62,7 @@ export default function Header() {
                     key={sub}
                     href={`/ctf/${sub}`}
                     onClick={() => setCtfOpen(false)}
-                    className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
+                    className="block px-4 py-2 text-sm hover:bg-white/30 transition-colors"
                   >
                     {sub}
                   </Link>
@@ -82,7 +82,7 @@ export default function Header() {
             </button>
             {csOpen && (
               <div 
-                className="absolute top-8 left-0 bg-white border border-zinc-200 rounded-lg shadow-md py-2 w-32 z-10"
+                className="absolute top-8 left-0 bg-white/20 backdrop-blur-sm border border-white/60 rounded-lg py-2 w-32 z-10"
                 onMouseLeave={() => setCsOpen(false)}
               >
                 {csSubcategories.map((sub) => (
@@ -90,7 +90,7 @@ export default function Header() {
                     key={sub}
                     href={`/cs/${sub}`}
                     onClick={() => setCsOpen(false)}
-                    className="block px-4 py-2 text-sm hover:bg-zinc-50 transition-colors"
+                    className="block px-4 py-2 text-sm hover:bg-white/30 transition-colors"
                   >
                     {sub}
                   </Link>

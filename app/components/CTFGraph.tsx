@@ -51,9 +51,9 @@ export default function CTFGraph({ posts }: Props) {
           />
            {/*텍스트 위치 조정*/}
           <Legend wrapperStyle={{ marginTop: "40px" }}/>
-          <Line type="monotone" dataKey="web" stroke="#89B4D4" strokeWidth={2} dot={{ r: 4 }} />
-          <Line type="monotone" dataKey="system" stroke="#D4899A" strokeWidth={2} dot={{ r: 4 }} />
-          <Line type="monotone" dataKey="forensics" stroke="#8DC4A0" strokeWidth={2} dot={{ r: 4 }} />
+          <Line type="monotone" dataKey="web" stroke="#C4A882" strokeWidth={2} dot={{ r: 4 }} />
+          <Line type="monotone" dataKey="system" stroke="#8A9BAD" strokeWidth={2} dot={{ r: 4 }} />
+          <Line type="monotone" dataKey="forensics" stroke="#9AA870" strokeWidth={2} dot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

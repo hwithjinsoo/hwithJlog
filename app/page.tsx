@@ -1,7 +1,7 @@
 import { getAllPosts } from "./lib/posts";
 import Link from "next/link";
 import CTFGraph from "./components/CTFGraph";
-import RunningCat from "./components/RunningCat";
+// import RunningCat from "./components/RunningCat";
 import IntroCard from "./components/IntroCard";
 
 export default function Home() {
@@ -50,10 +50,11 @@ export default function Home() {
         </aside>
       </div>
 
-      {/* 하단 고양이 - 페이지 전체 하단 고정 */}
-      <div className="fixed bottom-0 left-0 w-full z-50">
+      {/* 하단 고양이 - 페이지 전체 하단 고정 
+      잠시 주석처리 합니다 없는게 더 나을듯 5.22 */}
+      {/* <div className="fixed bottom-0 left-0 w-full z-50">
         <RunningCat />
-      </div>
+      </div> */}
     </>
   );
 }
