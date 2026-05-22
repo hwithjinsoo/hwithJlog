@@ -11,7 +11,7 @@ export default function IntroCard() {
   }, []);
 
   return (
-    <div className="relative border border-zinc-200 rounded-2xl overflow-hidden min-h-[320px] flex items-center">
+    <div className="relative bg-white/40 backdrop-blur-sm border border-white/60 rounded-2xl overflow-hidden min-h-[320px] flex items-center">
 
       {/* 왼쪽 꽃 - Mango Mint */}
       <div
@@ -76,7 +76,7 @@ export default function IntroCard() {
         </p>
       </div>
 
-      {/* 언덕 SVG */}
+      {/* 언덕 SVG
       <div className="absolute bottom-0 left-0 w-full z-10 pointer-events-none">
         <svg viewBox="0 0 800 130" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ display: "block", width: "100%", height: "130px" }}>
           <path d="M0,90 Q150,30 320,70 Q480,105 650,40 Q730,10 800,50 L800,130 L0,130 Z" fill="#a8d878"/>
@@ -97,7 +97,7 @@ export default function IntroCard() {
             <circle cx="628" cy="96" r="3" fill="white"/><circle cx="628" cy="96" r="1.5" fill="#f5e642"/>
           </g>
         </svg>
-      </div>
+      </div> */}
 
       {/* 애니메이션 keyframes */}
       <style>{`

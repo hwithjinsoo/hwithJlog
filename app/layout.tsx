@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalHeader from "./components/ConditionalHeader";
+import BlobBackground from "./components/BlobBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +26,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full bg-zinc-50">
+      <body className="min-h-full">
+        <BlobBackground />
         <ConditionalHeader />
         {children}
       </body>

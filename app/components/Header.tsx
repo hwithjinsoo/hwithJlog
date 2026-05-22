@@ -23,7 +23,7 @@ export default function Header() {
     }`;
 
   return (
-    <header className="border-b border-zinc-200 bg-white">
+    <header className="bg-transparent">
       <div className="max-w-5xl mx-auto px-8 py-4 flex items-center gap-8">
         {/* 로고 */}
         <Link href="/" className="flex items-center gap-2">

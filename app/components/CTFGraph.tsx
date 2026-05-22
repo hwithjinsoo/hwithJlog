@@ -38,8 +38,7 @@ export default function CTFGraph({ posts }: Props) {
     }));
 
   return (
-    <div className="bg-white rounded-2xl p-8 border border-zinc-200">
-      <h2 className="text-sm mb-6" style={{ marginLeft: "50px", color: "#D4547A" }}>CTF Overview</h2>
+    <div className="rounded-2xl p-8 bg-white/40 backdrop-blur-sm border border-white/60">
       {/*그래프 위치 조정*/}
       <ResponsiveContainer width="95%" height={150}>
         <LineChart data={data} margin={{ left: 12, right: 20}}>
@@ -52,9 +51,9 @@ export default function CTFGraph({ posts }: Props) {
           />
            {/*텍스트 위치 조정*/}
           <Legend wrapperStyle={{ marginTop: "40px" }}/>
-          <Line type="monotone" dataKey="web" stroke="#4f86c6" strokeWidth={2} dot={{ r: 4 }} />
-          <Line type="monotone" dataKey="system" stroke="#e07b5a" strokeWidth={2} dot={{ r: 4 }} />
-          <Line type="monotone" dataKey="forensics" stroke="#2d6a4f" strokeWidth={2} dot={{ r: 4 }} />
+          <Line type="monotone" dataKey="web" stroke="#89B4D4" strokeWidth={2} dot={{ r: 4 }} />
+          <Line type="monotone" dataKey="system" stroke="#D4899A" strokeWidth={2} dot={{ r: 4 }} />
+          <Line type="monotone" dataKey="forensics" stroke="#8DC4A0" strokeWidth={2} dot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

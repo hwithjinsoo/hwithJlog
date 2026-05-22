@@ -17,6 +17,7 @@ export default function Home() {
           {/* 그래프 영역 */}
           <div className="mb-6">
             <CTFGraph posts={ctfPosts} />
+            <div className="mt-6"></div>
             <IntroCard />
             </div>
             
@@ -36,7 +37,7 @@ export default function Home() {
                   <Link
                     key={post.slug.join("/")}
                     href={`/posts/${post.slug.join("/")}`}
-                    className="block p-4 bg-white rounded-xl border border-zinc-200 hover:border-zinc-400 transition-colors"
+                    className="block p-4 bg-white/40 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/60 transition-colors"
                   >
                     <p className="text-xs text-zinc-400 mb-1">{post.subcategory}</p>
                     <p className="text-sm font-medium leading-snug">{post.title}</p>
