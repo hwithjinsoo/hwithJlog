@@ -11,22 +11,20 @@ export default function Home() {
 
   return (
     <>
-     <div className="max-w-6xl mx-auto px-8 pt-12 flex flex-col md:flex-row gap-12 pb-32 items-start">
-        {/* 왼쪽 메인 */}
-        <div className="flex-1 min-w-0 flex-col gap-6">
-          {/* 그래프 영역 */}
-          <div className="mb-6">
-            <CTFGraph posts={ctfPosts} />
-            <div className="mt-6"></div>
-            <IntroCard />
-            </div>
-            
+    <div className="max-w-6xl mx-auto px-8 pt-12 flex flex-col lg:flex-row gap-12 pb-32 items-start">
+      {/* 왼쪽 메인 */}
+      <div className="w-full lg:flex-1 min-w-0 flex-col gap-6">
+        <div className="mb-6">
+          <CTFGraph posts={ctfPosts} />
+          <div className="mt-6"></div>
+          <IntroCard />
+        </div>
           <div>
           </div>
         </div>
 
         {/* 오른쪽 사이드바 */}
-        <aside className="w-72 shrink-0">
+        <aside className="w-full lg:w-72 shrink-0">
           <div className="sticky top-8">
             <h2 className="text-sm font-semibold text-zinc-500 mb-4">최근 CTF 글</h2>
             <div className="flex flex-col gap-4">

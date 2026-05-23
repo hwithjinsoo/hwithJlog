@@ -63,3 +63,11 @@ code {
 .prose h2::before {
   color: #A06B3A;
 }
+
+@media (max-width: 768px) {
+  .blob {
+    width: 180px !important;
+    height: 180px !important;
+    filter: blur(60px) !important;
+  }
+}
