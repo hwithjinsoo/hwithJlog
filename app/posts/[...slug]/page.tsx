@@ -5,6 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPosts } from "@/app/lib/posts";
 import rehypePrettyCode from "rehype-pretty-code";
 import PostHeader from "@/app/components/PostHeader";
+import Image from "next/image";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -49,6 +50,17 @@ export default async function PostPage({ params }: Props) {
       <div className="prose prose-zinc max-w-none">
         <MDXRemote
           source={content}
+          components={{
+            img: (props) => (
+              <Image
+                src={props.src ?? ""}
+                alt={props.alt ?? ""}
+                width={800}
+                height={500}
+                style={{ width: "100%", height: "auto", borderRadius: "8px", margin: "1rem 0" }}
+              />
+            ),
+          }}
           options={{
             mdxOptions: {
               rehypePlugins: [

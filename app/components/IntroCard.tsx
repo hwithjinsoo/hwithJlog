@@ -13,7 +13,7 @@ export default function IntroCard() {
   return (
     <div className="relative bg-white/40 backdrop-blur-sm border border-white/60 rounded-2xl overflow-hidden min-h-[320px] flex items-center">
 
-      {/* 왼쪽 꽃 - Mango Mint */}
+     {/* 왼쪽 꽃 */}
       <div
         className="absolute -left-8 pointer-events-none z-20"
         style={{
@@ -28,14 +28,14 @@ export default function IntroCard() {
         <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
           <g transform="translate(90,90)">
             {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
-              <ellipse key={angle} cx="0" cy="-38" rx="18" ry="32" fill="#C9A227" transform={`rotate(${angle})`} />
+              <ellipse key={angle} cx="0" cy="-38" rx="18" ry="32" fill="#C4956A" transform={`rotate(${angle})`} />
             ))}
-            <circle cx="0" cy="0" r="22" fill="#7A5C0A" />
+            <circle cx="0" cy="0" r="22" fill="#7B4F2E" />
           </g>
         </svg>
       </div>
 
-      {/* 오른쪽 꽃 - Party Punch */}
+      {/* 오른쪽 꽃 */}
       <div
         className="absolute -right-10 pointer-events-none z-20"
         style={{
@@ -50,9 +50,9 @@ export default function IntroCard() {
         <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
           <g transform="translate(100,100)">
             {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
-              <ellipse key={angle} cx="0" cy="-44" rx="20" ry="36" fill="#D4547A" transform={`rotate(${angle})`} />
+              <ellipse key={angle} cx="0" cy="-44" rx="20" ry="36" fill="#E8C9A0" transform={`rotate(${angle})`} />
             ))}
-            <circle cx="0" cy="0" r="24" fill="#ffffff" stroke="#e0e0e0" strokeWidth="1" />
+            <circle cx="0" cy="0" r="24" fill="#A06B3A" />
           </g>
         </svg>
       </div>
@@ -65,15 +65,17 @@ export default function IntroCard() {
             <path d="M8,24 Q8,9 24,9 Q40,9 40,24" fill="none" stroke="#e07090" strokeWidth="3.5" strokeLinecap="round"/>
             <path d="M12,24 Q12,13 24,13 Q36,13 36,24" fill="none" stroke="#e896b0" strokeWidth="3" strokeLinecap="round"/>
           </svg>
-          <p className="text-sm mb-1" style={{ color: "#D4547A" }}>Hello, World!</p>
+          <p className="text-sm text-zinc-500 leading-relaxed mb-1 text-center" >Hello, World!</p>
         </div>
-        <p className="text-sm text-zinc-500 leading-relaxed mb-5 text-center">
-          • 다양한 분야의 CTF 문제 풀이과정을 올릴 블로그에요
-          <br />
-          • 계속해서 다양한 기능이나 목록을 추가할 예정이에요
-          <br />
-          • next.js로 개발하고 vercel로 배포 했어요
-        </p>
+          <div className="flex justify-center mb-5">
+            <ul className="text-sm text-zinc-500 leading-relaxed space-y-1 text-left list-none">
+              <li>• CTF 문제 풀이과정을 올릴 블로그에요</li>
+              <li>• 주로 web과 system 해킹을 다룰거에요</li>
+              <li>• 글 제목은 곧 ctf 문제의 제목이에요</li>
+              <li>• 계속해서 다양한 기능이나 목록을 추가할 예정이에요</li>
+              <li>• next.js로 개발하고 vercel로 배포 했어요</li>
+            </ul>
+          </div>
       </div>
 
       {/* 언덕 SVG

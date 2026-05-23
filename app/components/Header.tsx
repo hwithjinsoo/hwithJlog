@@ -34,7 +34,7 @@ export default function Header() {
             width={40}
             height={30}
           />
-          <span className="text-base">hwithJlog</span>
+          <span className="text-base text-zinc-500 ">hwithJlog</span>
         </Link>
 
         {/* 네비 */}

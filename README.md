@@ -39,6 +39,11 @@ git add .
 git commit -m "변경 내용 설명"
 git push
 
-#D4547A
+색상 코드 {
+    #D4547A
+}
 
-고양이 없에자
+이미지 업로드 경로 {
+    ![설명](/images/파일명.png)
+}
+
