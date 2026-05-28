@@ -1,0 +1,75 @@
+---
+title: "out_of_bound"
+date: "2026-05-26"
+category: "ctf"
+subcategory: "system"
+description: "이 문제는 서버에서 작동하고 있는 서비스(out_of_bound)의 바이너리와 소스 코드가 주어집니다."
+---
+
+out_of_bound 취약점을 이용해 서버의 쉘을 탈취하고 flag를 얻어봐요.
+______________________________
+
+## source code analyze
+
+문제의 전체 코드입니다. 하나씩 봐볼께요.
+
+```c
+char name[16];
+
+char *command[10] = { 
+    "cat",
+    "ls",
+    "id",
+    "ps",
+    "file ./oob" 
+};
+
+void alarm_handler()
+{
+    puts("TIME OUT");
+    exit(-1);
+}
+
+void initialize()
+{
+    setvbuf(stdin, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
+
+    signal(SIGALRM, alarm_handler);
+    alarm(30);
+}
+
+int main()
+{
+    int idx;
+
+    initialize();
+
+    printf("Admin name: ");
+    read(0, name, sizeof(name));
+    printf("What do you want?: ");
+
+    scanf("%d", &idx);
+
+    system(command[idx]);
+
+    return 0;
+}
+```
+
+______________________________
+
+### out_of_bound(oob)?
+> oob는 배열의 주소로부터 특정 오프셋에 있는 메모리의 값을 참조할 수 있는 취약점이에요.    
+배열을 선언해놓고 인덱스 범위를 설정해놓지 않는다면 해당 취약점이 생겨요.
+
+______________________________
+
+## payload
+
+입력 가능한 변수에는 name과 idx가 있어요. 그럼 name에 shell을 탈취 하기 위해 /bin/sh 주소를 넣고  
+idx에 전역 변수들의 오프셋을 구해 그 값을 넣으면 name 변수를 참조할 수 있어요.
+
+shell을 탈취하기 위해 필요한 
+
+나머지 금방 쓸께용 ㅎㅎ~~

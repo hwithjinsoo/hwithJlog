@@ -1,0 +1,87 @@
+---
+title: "Tomcat_Manager"
+date: "2026-05-29"
+category: "ctf"
+subcategory: "web"
+description: "드림이가 톰캣 서버로 개발을 시작하였습니다. 서비스의 취약점을 찾아 플래그를 획득하세요."
+---
+______________________________
+
+## Challenge Analysis
+
+이번 문제는 tomcat의 취약점을 이용해서 flag를 가져오는 문제다.  
+
+문제 풀이 순서는 다음과 같다.  
+1. "tomcat"이라는 계정을 알아낸다.  
+2. /manager 페이지에 접근한다  
+3. 웹 쉘을 서버에 업로드해 flag를 탈취한다.
+
+______________________________
+
+## Payload
+image.jsp의 파라미터로 이미지를 호출하고 있는 걸 알 수 있다.  
+<img src="/images/tomcat_manager/path.png" alt="path image" width="500" />
+
+______________________________
+
+다음으로 문제에서 주어진 코드를 보고서 file 이름을 따로 검증하지 않고 아무거나 다 받는다는걸 인지하고서 넘어가자.  
+
+```java
+<%@ page trimDirectiveWhitespaces="true" %>
+<%
+String filepath = getServletContext().getRealPath("resources") + "/";
+String _file = request.getParameter("file");
+
+response.setContentType("image/jpeg");
+try{
+    java.io.FileInputStream fileInputStream = new java.io.FileInputStream(filepath + _file);
+    int i;   
+    while ((i = fileInputStream.read()) != -1) {  
+        out.write(i);
+    }   
+    fileInputStream.close();
+}catch(Exception e){
+    response.sendError(404, "Not Found !" );
+}
+%>
+```
+
+______________________________
+
+우리의 첫번째 목표는 "tomcat" 계정 정보를 알아내 /manager 페이지에 접근하는것이기에  
+/tomcat-user-xml 경로로 접근해야한다. 그럴려면 위 파일 경로 취약점을 이용해 접근해보자.
+
+절대경로로는 접근이 불가능하기에 상대경로로 입력해보면 접근이 가능하다.  
+아래 사진을 보면 tomcat의 pw가 나와있다. 이걸로 /manager 페이지에 접근해보자.
+
+<img src="/images/tomcat_manager/tom_info.png" alt="tom_info" width="1000" />
+
+______________________________
+
+드디어 해당 서버를 마음대로 할 수 있는 /manager 페이지에 접근했다.
+사진을 보면 "WAR file to deploy" 목록이 있는데 여기는 **.war 형식의 파일을 업로드하면 서버가 자동으로 .jsp 형식으로 변환해서 읽는 곳이다.**   
+우리는 flag를 얻어야하기 때문에 **서버에 웹쉘을 심어서 쉘을 탈취해야한다.**  
+이에 인터넷에서 웹쉘 코드를 가져와 .war 형식으로 서버에 업로드 하면 된다.  
+
+"https://github.com/jbarcia/Web-Shells/blob/master/laudanum/jsp/cmd.war"
+
+<img src="/images/tomcat_manager/manager.png" width="800" />
+
+______________________________
+
+application 목록을 보면 성공적으로 웹쉘이 심어진걸 볼 수 있다(목록 맨 하단에 /webshell 페이지가 생겼다 ㅎㅎ).  
+
+<img src="/images/tomcat_manager/shell.png" width="800" />
+
+______________________________
+
+/webshell 페이지에 접근해서 /flag를 입력하면 서버에 심어진 쉘이 사용자가 입력한대로 flag를 성공적으로 가져온다!
+
+<img src="/images/tomcat_manager/flag.png" width="800" />
+
+참고로 웹쉘을 심었다는건 해당 서버를 어느정도 마음대로 조작이 가능하다는 소리이다.  
+위와 같이 flag를 가져올 수도 있고 **i_love_jinsoo**와 같은 폴더도 마음대로 만들어놓고 도망갈 수 있다.
+
+<img src="/images/tomcat_manager/love.png" width="500" />
+______________________________
+
