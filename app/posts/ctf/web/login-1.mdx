@@ -235,7 +235,7 @@ ______________________________
 코드를 다시 읽어보니까 **MAXRESETCOUNT = 5** 변수가 선언되어 있었는데,  
 비밀번호 변경을 한 번 틀릴때마다. 즉 백업 코드가 틀릴 때마다 MAXRESETCOUNT +=1 을 하고 값이 5가 되면 해당 계정은 차단되는 로직이 있었다.  
 그렇다고 방법이 없는건 아니였다. "/forgot_password" 부분의 로직을 다시 봐보니  
-MAXRESETCOUNT +=1 하기 전에 **time.sleep(1) 코드가 존재한다. 그렇다는건 MAXRESETCOUNT에 +1이 되기 전에  
+MAXRESETCOUNT +=1 하기 전에 **time.sleep(1)** 코드가 존재한다. 그렇다는건 MAXRESETCOUNT에 +1이 되기 전에  
 1~100까지 모든 백업 코드를 집어 넣으면 된다.
 
 이번에는 burpsuite에 확장 프로그램 중 하나인 **turbo intruder**를 사용해서 한꺼번에 100개 요소를 서버에 요청해보겠다.  
