@@ -12,7 +12,6 @@ const categoryLabels: Record<string, string> = {
   all: "전체",
   ctf: "CTF 풀이",
   cs: "컴퓨터 지식",
-  daily: "일상",
 };
 
 export default function CategoryTabs({ posts }: Props) {

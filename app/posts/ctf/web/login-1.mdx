@@ -1,0 +1,257 @@
+---
+title: "login-1"
+date: "2026-06-04"
+category: "ctf"
+subcategory: "web"
+description: "admin 권한을 가진 사용자로 로그인하여 플래그를 획득하세요."
+---
+______________________________
+
+### Challenge Analysis
+이번 문제는 admin 권한을 가진 계정을 찾아서 pw 변경 로직에 존재하는 취약점을 찾고.  
+백업 코드를 **레이스 컨디션**으로 일괄 입력 한 뒤 pw를 변경하고 flag를 얻는 문제다.
+
+페이로드 순서는 다음과 같다.  
+1. admin 권한을 가지고 있는 계정을 찾는다.
+2. pw 변경 페이지에서 레이스 컨디션 기법으로 백업 코드 로직을 우회한다.
+
+______________________________
+
+## source code analyze
+
+문제의 전체 코드다.
+
+```python
+userLevel = {
+    0 : 'guest',
+    1 : 'admin'
+}
+MAXRESETCOUNT = 5
+
+try:
+    FLAG = open('./flag.txt', 'r').read()
+except:
+    FLAG = '[**FLAG**]'
+
+def makeBackupcode():
+    return random.randrange(100)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        userid = request.form.get("userid")
+        password = request.form.get("password")
+
+        conn = get_db()
+        cur = conn.cursor()
+        user = cur.execute('SELECT * FROM user WHERE id = ? and pw = ?', (userid, hashlib.sha256(password.encode()).hexdigest() )).fetchone()
+        
+        if user:   
+            session['idx'] = user['idx']
+            session['userid'] = user['id']
+            session['name'] = user['name']
+            session['level'] = userLevel[user['level']]
+            return redirect(url_for('index'))
+        ###
+        
+        return "<script>alert('Wrong id/pw');history.back(-1);</script>";
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    else:
+        userid = request.form.get("userid")
+        password = request.form.get("password")
+        name = request.form.get("name")
+
+        conn = get_db()
+        cur = conn.cursor()
+        user = cur.execute('SELECT * FROM user WHERE id = ?', (userid,)).fetchone()
+        if user:
+            return "<script>alert('Already Exists userid.');history.back(-1);</script>";
+
+        backupCode = makeBackupcode()
+        sql = "INSERT INTO user(id, pw, name, level, backupCode) VALUES (?, ?, ?, ?, ?)"
+        cur.execute(sql, (userid, hashlib.sha256(password.encode()).hexdigest(), name, 0, backupCode))
+        conn.commit()
+        return render_template("index.html", msg=f"<b>Register Success.</b><br/>Your BackupCode : {backupCode}")
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'GET':
+        return render_template('forgot.html')
+    else:
+        userid = request.form.get("userid")
+        newpassword = request.form.get("newpassword")
+        backupCode = request.form.get("backupCode", type=int)
+
+        conn = get_db()
+        cur = conn.cursor()
+        user = cur.execute('SELECT * FROM user WHERE id = ?', (userid,)).fetchone()
+        if user:
+            # security for brute force Attack.
+            time.sleep(1)
+
+            if user['resetCount'] == MAXRESETCOUNT:
+                return "<script>alert('reset Count Exceed.');history.back(-1);</script>"
+            
+            if user['backupCode'] == backupCode:
+                newbackupCode = makeBackupcode()
+                updateSQL = "UPDATE user set pw = ?, backupCode = ?, resetCount = 0 where idx = ?"
+                cur.execute(updateSQL, (hashlib.sha256(newpassword.encode()).hexdigest(), newbackupCode, str(user['idx'])))
+                msg = f"<b>Password Change Success.</b><br/>New BackupCode : {newbackupCode}"
+
+            else:
+                updateSQL = "UPDATE user set resetCount = resetCount+1 where idx = ?"
+                cur.execute(updateSQL, (str(user['idx'])))
+                msg = f"Wrong BackupCode !<br/><b>Left Count : </b> {(MAXRESETCOUNT-1)-user['resetCount']}"
+            
+            conn.commit()
+            return render_template("index.html", msg=msg)
+
+        return "<script>alert('User Not Found.');history.back(-1);</script>";
+
+
+@app.route('/user/<int:useridx>')
+def users(useridx):
+    conn = get_db()
+    cur = conn.cursor()
+    user = cur.execute('SELECT * FROM user WHERE idx = ?;', [str(useridx)]).fetchone()
+    
+    if user:
+        return render_template('user.html', user=user)
+
+    return "<script>alert('User Not Found.');history.back(-1);</script>";
+
+@app.route('/admin')
+def admin():
+    if session and (session['level'] == userLevel[1]):
+        return FLAG
+
+    return "Only Admin !"
+
+app.run(host='0.0.0.0', port=8000)
+
+```
+
+______________________________
+
+## Payload
+
+해당 부분을 보면 아이디는 총 두 개로 나뉘어져있다.  
+우리는 admin 권한을 가진 계정을 찾아야한다.
+
+```python
+userLevel = {
+    0 : 'guest',
+    1 : 'admin'
+}
+```
+______________________________
+
+해당 코드를 보면 /user 뒤에 번호를(==userid) 넣으면 db에서 해당 계정 정보를 가져온다는걸 알 수 있다.  
+페이지로 접근해보면 아래 사진과 같은 정보가 뜨고 우리가 원하는 admin 권한을 가진 아이디를 찾을 수 있다.
+
+```python
+@app.route('/user/<int:useridx>')
+def users(useridx):
+    conn = get_db()
+    cur = conn.cursor()
+    user = cur.execute('SELECT * FROM user WHERE idx = ?;', [str(useridx)]).fetchone()
+    
+    if user:
+        return render_template('user.html', user=user)
+
+    return "<script>alert('User Not Found.');history.back(-1);</script>";
+```  
+
+<img src="/images/login-1/id.png" width="500" />  
+
+______________________________
+
+하지만 우리는 해당 계정의 비밀번호를 모르기에 "/forgot_password"에 존재하는 취약점 로직을 통해 비밀번호를 변경해야한다.  
+로직을 봤을때 비밀번호를 변경하려면 세 가지 요소가 필요하다. id,newpassword,backupCode 이렇게 세 가지를 요구하고 있는데,  
+백업 코드는 계정을 생성할때 0~100 사이의 값을 랜덤으로 할당해준다. 일단 이걸 브루드 포싱으로 1~100까지 넣어보자.
+
+
+```python
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'GET':
+        return render_template('forgot.html')
+    else:
+        userid = request.form.get("userid")
+        newpassword = request.form.get("newpassword")
+        backupCode = request.form.get("backupCode", type=int)
+
+        conn = get_db()
+        cur = conn.cursor()
+        user = cur.execute('SELECT * FROM user WHERE id = ?', (userid,)).fetchone()
+        if user:
+            # security for brute force Attack.
+            time.sleep(1)
+
+            if user['resetCount'] == MAXRESETCOUNT:
+                return "<script>alert('reset Count Exceed.');history.back(-1);</script>"
+            
+            if user['backupCode'] == backupCode:
+                newbackupCode = makeBackupcode()
+                updateSQL = "UPDATE user set pw = ?, backupCode = ?, resetCount = 0 where idx = ?"
+                cur.execute(updateSQL, (hashlib.sha256(newpassword.encode()).hexdigest(), newbackupCode, str(user['idx'])))
+                msg = f"<b>Password Change Success.</b><br/>New BackupCode : {newbackupCode}"
+
+            else:
+                updateSQL = "UPDATE user set resetCount = resetCount+1 where idx = ?"
+                cur.execute(updateSQL, (str(user['idx'])))
+                msg = f"Wrong BackupCode !<br/><b>Left Count : </b> {(MAXRESETCOUNT-1)-user['resetCount']}"
+            
+            conn.commit()
+            return render_template("index.html", msg=msg)
+
+        return "<script>alert('User Not Found.');history.back(-1);</script>";
+```  
+
+______________________________
+
+burpsuite에 intruder 기능을 사용해 1~100의 값을 넣었는데 5번째부터 응답이 이상해서 봐봤더니  
+**reset Count Exceed** 응답이 5번째 이후로 계속 오고 있었다.
+
+<img src="/images/login-1/burp1.png" width="700" />  
+
+______________________________
+
+코드를 다시 읽어보니까 **MAXRESETCOUNT = 5** 변수가 선언되어 있었는데,  
+비밀번호 변경을 한 번 틀릴때마다. 즉 백업 코드가 틀릴 때마다 MAXRESETCOUNT +=1 을 하고 5번이 되면 그 계정은 차단되는 로직이 있었다.  
+그렇다고 방법이 없는건 아니였다. "/forgot_password" 부분의 로직을 다시 봐보니  
+MAXRESETCOUNT +=1 하기 전에 **time.sleep(1) 코드가 존재한다. 그렇다는건 MAXRESETCOUNT에 +1이 되기 전에  
+1~100까지 모든 백업 코드를 집어 넣으면 된다.
+
+이번에는 burpsuite에 확장 프로그램 중 하나인 **turbo intruder**를 사용해서 한꺼번에 100개 요소를 서버에 요청해보겠다.  
+페이로드는 다음과 같다.  
+
+<img src="/images/login-1/burp2.png" width="900" />  
+
+______________________________
+
+페이로드를 보낼 때 비밀번호를 **npw**로 변경하겠다고 해놨었고 해당 비밀번호로 로그인 시도를 해보니 성공적으로 접속이 가능했다.  
+<img src="/images/login-1/admin.png" width="800" />
+
+______________________________
+
+admin 권한을 가진 상태로 "/admin" 페이지에 접속하면 성공적으로 flag를 얻을 수 있다!
+
+<img src="/images/login-1/flag.png" width="800" />
+
+

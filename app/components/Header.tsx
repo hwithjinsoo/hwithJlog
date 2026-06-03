@@ -5,12 +5,15 @@ import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
+// 카테고리 헤더 추가 부분
 const ctfSubcategories = ["web", "system", "forensics"];
 const csSubcategories = ["architecture", "network", "os"];
+const snippetSubcategories = ["web", "system"]; 
 
 export default function Header() {
   const [ctfOpen, setCtfOpen] = useState(false);
   const [csOpen, setCsOpen] = useState(false);
+  const [snippetOpen, setSnippetOpen] = useState(false);
   const pathname = usePathname();
 
   const isActive = (prefix: string) => pathname.startsWith(prefix);
@@ -46,7 +49,7 @@ export default function Header() {
           {/* CTF 드롭다운 */}
           <div className="relative">
             <button
-                onClick={() => { setCtfOpen(!ctfOpen); setCsOpen(false);}}
+                onClick={() => { setCtfOpen(!ctfOpen); setCsOpen(false); setSnippetOpen(false); }}
                 className={navClass("/ctf")}
               >
               CTF
@@ -54,6 +57,7 @@ export default function Header() {
             </button>
             {ctfOpen && (
               <div 
+                // 드롭다운 박스 투명도 조절
                 className="absolute top-8 left-0 bg-white/40 backdrop-blur-sm border border-white/40 rounded-lg py-2 w-32 z-10"
                 onMouseLeave={() => setCtfOpen(false)}
               >
@@ -74,7 +78,8 @@ export default function Header() {
           {/* CS 드롭다운 */}
           <div className="relative">
             <button
-              onClick={() => { setCsOpen(!csOpen); setCtfOpen(false); }}
+              // CS 버튼 onClick 수정
+              onClick={() => { setCsOpen(!csOpen); setCtfOpen(false); setSnippetOpen(false); }}
               className={navClass("/cs")}
             >
               CS
@@ -82,7 +87,7 @@ export default function Header() {
             </button>
             {csOpen && (
               <div 
-                className="absolute top-8 left-0 bg-white/20 backdrop-blur-sm border border-white/60 rounded-lg py-2 w-32 z-10"
+                className="absolute top-8 left-0 bg-white/40 backdrop-blur-sm border border-white/60 rounded-lg py-2 w-32 z-10"
                 onMouseLeave={() => setCsOpen(false)}
               >
                 {csSubcategories.map((sub) => (
@@ -90,6 +95,34 @@ export default function Header() {
                     key={sub}
                     href={`/cs/${sub}`}
                     onClick={() => setCsOpen(false)}
+                    className="block px-4 py-2 text-sm hover:bg-white/30 transition-colors"
+                  >
+                    {sub}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+                    {/* Snippet 드롭다운 */}
+          <div className="relative">
+            <button
+              onClick={() => { setSnippetOpen(!snippetOpen); setCtfOpen(false); setCsOpen(false); }}
+              className={navClass("/snippet")}
+            >
+              Snippet
+              <span className="text-xs">{snippetOpen ? "▲" : "▼"}</span>
+            </button>
+            {snippetOpen && (
+              <div
+                className="absolute top-8 left-0 bg-white/40 backdrop-blur-sm border border-white/60 rounded-lg py-2 w-32 z-10"
+                onMouseLeave={() => setSnippetOpen(false)}
+              >
+                {snippetSubcategories.map((sub) => (
+                  <Link
+                    key={sub}
+                    href={`/snippet/${sub}`}
+                    onClick={() => setSnippetOpen(false)}
                     className="block px-4 py-2 text-sm hover:bg-white/30 transition-colors"
                   >
                     {sub}
