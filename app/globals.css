@@ -27,29 +27,30 @@ body {
 pre {
   overflow-x: auto;
   max-width: 100%;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre;          /* pre-wrap → pre 로 변경 */
+  word-break: normal;        /* break-all 제거 */
   background: #f5f5f5 !important;
-  padding: 12px 12px 12px 50px !important;
+  padding: 12px 12px 12px 60px !important;  /* 50px → 60px */
   border-radius: 8px;
   counter-reset: line;
 }
 
-code {
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-[data-line]::before {
-  counter-increment: line;
+span[data-line]::before {
   content: counter(line);
   display: inline-block;
-  width: 2rem;
+  width: 2.5rem;
   margin-right: 1rem;
-  margin-left: -50px;
+  margin-left: -60px;
   padding-left: 10px;
   text-align: right;
   color: #999;
+}
+
+
+code {
+  counter-reset: line;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 
 /* MDX 스타일 선언 */
