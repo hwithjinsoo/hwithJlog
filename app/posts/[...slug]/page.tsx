@@ -67,7 +67,7 @@ export default async function PostPage({ params }: Props) {
                 [
                   rehypePrettyCode,
                   {
-                    theme: "github-light",
+                    theme: "github-dark",
                     showLineNumbers: true,
                   },
                 ],
