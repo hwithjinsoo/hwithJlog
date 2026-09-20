@@ -31,7 +31,7 @@ export default function PostHeader({ title }: Props) {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-white border-b border-zinc-200 z-50 px-8 py-4">
+    <div className="fixed top-0 left-0 w-full bg-white border-b border-zinc-200 z-50 px-8 py-2">
     <div className="max-w-5xl mx-auto flex items-center justify-between text-sm">
         <div className="w-8" />
         <div className="flex items-center gap-2">

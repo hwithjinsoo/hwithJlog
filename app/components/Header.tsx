@@ -104,34 +104,6 @@ export default function Header() {
             )}
           </div>
 
-                    {/* Snippet 드롭다운 */}
-          <div className="relative">
-            <button
-              onClick={() => { setSnippetOpen(!snippetOpen); setCtfOpen(false); setCsOpen(false); }}
-              className={navClass("/snippet")}
-            >
-              Snippet
-              <span className="text-xs">{snippetOpen ? "▲" : "▼"}</span>
-            </button>
-            {snippetOpen && (
-              <div
-                className="absolute top-8 left-0 bg-white/40 backdrop-blur-sm border border-white/60 rounded-lg py-2 w-32 z-10"
-                onMouseLeave={() => setSnippetOpen(false)}
-              >
-                {snippetSubcategories.map((sub) => (
-                  <Link
-                    key={sub}
-                    href={`/snippet/${sub}`}
-                    onClick={() => setSnippetOpen(false)}
-                    className="block px-4 py-2 text-sm hover:bg-white/30 transition-colors"
-                  >
-                    {sub}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
         </nav>
       </div>
     </header>

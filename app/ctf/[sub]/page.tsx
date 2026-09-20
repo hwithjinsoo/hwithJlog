@@ -12,7 +12,7 @@ export default async function CtfSubPage({ params }: Props) {
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-8 pt-12">
+    <div className="max-w-4xl mx-auto px-8 pt-12 pb-24">
       <h1 className="text-3xl font-bold mb-2">CTF - {sub}</h1>
       <p className="text-zinc-500 mb-8">{posts.length}개의 글</p>
 
