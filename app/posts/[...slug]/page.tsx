@@ -15,6 +15,11 @@ type Props = {
   searchParams: Promise<{ error?: string }>;
 };
 
+// slug -> 실제 본문이 담긴 env var 키. protected 글이 늘어나면 여기에 추가.
+const PROTECTED_CONTENT_ENV_MAP: Record<string, string> = {
+  "ctf/web/API-Mass-Assignment(root-me)": "PROTECTED_CONTENT_API_MASS_ASSIGNMENT_B64",
+};
+
 export async function generateStaticParams() {
   const posts = getAllPosts();
   return posts.map((post) => ({ slug: post.slug }));
@@ -34,7 +39,8 @@ export default async function PostPage({ params, searchParams }: Props) {
   }
 
   const fileContents = fs.readFileSync(filePath, "utf8");
-  const { data, content } = matter(fileContents);
+  const { data, content: stubContent } = matter(fileContents);
+  let content = stubContent;
 
   if (data.protected) {
     const cookieStore = await cookies();
@@ -43,13 +49,13 @@ export default async function PostPage({ params, searchParams }: Props) {
     if (!authorized) {
       return (
         <div className="max-w-sm mx-auto pt-32 px-8">
-          <h1 className="text-xl font-bold mb-4">This post requires a password.</h1>
+          <h1 className="text-xl font-bold mb-4">비밀번호가 필요한 글이에요</h1>
           <form action={unlockPost} className="flex flex-col gap-3">
             <input type="hidden" name="redirectTo" value={`/posts/${slug.join("/")}`} />
             <input
               type="password"
               name="password"
-              placeholder="password"
+              placeholder="비밀번호"
               className="border border-zinc-300 rounded-lg px-4 py-2"
               required
             />
@@ -57,9 +63,16 @@ export default async function PostPage({ params, searchParams }: Props) {
               확인
             </button>
           </form>
-          {error && <p className="text-red-500 text-sm mt-2">Incorrect password.</p>}
+          {error && <p className="text-red-500 text-sm mt-2">비밀번호가 틀렸어요.</p>}
         </div>
       );
+    }
+
+    // 인증 통과: 레포에 커밋된 stub 대신, 실제 본문은 env var에서 복원
+    const envKey = PROTECTED_CONTENT_ENV_MAP[slug.join("/")];
+    const encoded = envKey ? process.env[envKey] : undefined;
+    if (encoded) {
+      content = Buffer.from(encoded, "base64").toString("utf8");
     }
   }
 
