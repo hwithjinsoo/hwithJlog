@@ -1,0 +1,65 @@
+---
+title: "API - Mass Assignment"
+date: "2026-09-20"
+category: "ctf"
+subcategory: "web"
+description: "~ and has even created an administration role!"
+---
+______________________________
+
+### Challenge Analysis
+
+이번 문제는 Swagger 페이지에서 Mass Assignment 취약점을 활용해  
+guest -> admin 으로 권한 상승을 해야하는 문제에요.
+
+______________________________
+
+## Payload
+
+우선 주요 공략 endpoint는 /user입니다.  
+여기에서는 유저 정보 조회 기능을 제공하고 있어요.  
+
+Swagger 페이지에서 보면 해당 endpoint에서는 GET method를 받는다고 되어 있고 명시 되어 있는 것 처럼  
+POST, PATCH 등등 막혀있었어요.  
+
+하지만 **PUT** method를 필터링 하지 않았고 동시에 Mass Assignment 취약점까지 존재하기에  
+이 두 점을 공략하면 admin 권한을 탈취 할 수 있습니다.
+
+<img src="/images/API-Mass-Assignment/putmethod.png" width="960" />  
+
+```javascript
+//조작 전
+{
+    "note":"",
+    "status":"guest",
+    "userid":5,
+    "username":"jin"
+}
+
+//조작 후
+{
+  "note": "",
+  "status": "admin",
+  "userid": 0,
+  "username": "jin"
+}
+```
+
+사진과 같이 /user endpoint에 PUT method를 이용하여 요청 body를 조작해서 보내주면  
+**"message":"User updated sucessfully."** User 정보가 업데이트 됐다는 응답을 받아요.  
+
+권한을 admin으로 상승 시킨 계정을 가지고서 /flag 페이지에 접근하면 flag를 얻을 수 있습니다.  
+
+______________________________
+
+## 수정 방안
+
+**- method 단위 접근 제어 실패**  
+Swagger에서는 /user endpoint에 GET을 쓰도록 명시 되어 있었지만 **PUT** method를 허용했어요.  
+만약 해당 endpoint에 GET만 사용할꺼라면 화이트리스트 기반 필터링을 해야해요.  
+
+**- Mass Assignment**  
+요청 body를 필드 단위로 검증하지 않아서  
+원래라면 클라이언트 측에서 건드릴 수 없어야 할 status 등등 필드까지 덮어써질 수 있었어요.
+
+
