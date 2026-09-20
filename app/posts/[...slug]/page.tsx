@@ -1,14 +1,18 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { cookies } from "next/headers";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPosts } from "@/app/lib/posts";
 import rehypePrettyCode from "rehype-pretty-code";
 import PostHeader from "@/app/components/PostHeader";
 import Image from "next/image";
+import { verifyToken, COOKIE_NAME } from "@/app/lib/auth";
+import { unlockPost } from "@/app/actions/unlock";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
+  searchParams: Promise<{ error?: string }>;
 };
 
 export async function generateStaticParams() {
@@ -16,8 +20,9 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default async function PostPage({ params }: Props) {
+export default async function PostPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { error } = await searchParams;
   const filePath = path.join(process.cwd(), "app", "posts", ...slug) + ".mdx";
 
   if (!fs.existsSync(filePath)) {
@@ -30,6 +35,33 @@ export default async function PostPage({ params }: Props) {
 
   const fileContents = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(fileContents);
+
+  if (data.protected) {
+    const cookieStore = await cookies();
+    const authorized = verifyToken(cookieStore.get(COOKIE_NAME)?.value);
+
+    if (!authorized) {
+      return (
+        <div className="max-w-sm mx-auto pt-32 px-8">
+          <h1 className="text-xl font-bold mb-4">This post requires a password.</h1>
+          <form action={unlockPost} className="flex flex-col gap-3">
+            <input type="hidden" name="redirectTo" value={`/posts/${slug.join("/")}`} />
+            <input
+              type="password"
+              name="password"
+              placeholder="password"
+              className="border border-zinc-300 rounded-lg px-4 py-2"
+              required
+            />
+            <button type="submit" className="bg-black text-white rounded-lg py-2">
+              확인
+            </button>
+          </form>
+          {error && <p className="text-red-500 text-sm mt-2">Incorrect password.</p>}
+        </div>
+      );
+    }
+  }
 
   return (
     <>
