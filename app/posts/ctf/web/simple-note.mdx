@@ -1,5 +1,5 @@
 ---
-title: "simple-note"
+title: "simple-note (dreamhack)"
 date: "2026-06-26"
 category: "ctf"
 subcategory: "web"
@@ -9,12 +9,12 @@ ______________________________
 
 ### Challenge Analysis
 이번 문제는 해당 웹 사이트의 여러 기능 중에서 backup 로직에 존재하는 취약점을 통해  
-flag를 얻는 문제다.
+flag를 얻는 문제예요.
 
 ## source code analyze
 
-전체 코드를 보면 이 웹사이트에는 "쓰기, 수정, 삭제, 백업" 기능이 존재한다.  
-그 중 backup_notes 함수에 취약점이 존재한다.
+전체 코드를 보면 이 웹사이트에는 "쓰기, 수정, 삭제, 백업" 기능이 존재해요.  
+그 중 backup_notes 함수에 취약점이 존재해요.
 
  ```python
 lock = threading.Lock()
@@ -138,9 +138,9 @@ def post_backup_notes():
 
  ______________________________
 
- backup_notes 페이지에서 post 요청을 할 때를 봐보자.  
- 백업 페이지에 접근하려하면 우선 백업 할 note가 있는지 확인하고 없다면 404 error를 띄운다.  
- 후에 timestamp 함수로 쿠키를 생성하고 해당 값을 인자로서 backup_notes() 함수에 보낸다.
+ backup_notes 페이지에서 post 요청을 할 때를 봐볼께요.  
+ 백업 페이지에 접근하려하면 우선 백업 할 note가 있는지 확인하고 없다면 404 error를 띄워요.  
+ 후에 timestamp 함수로 쿠키를 생성하고 해당 값을 인자로서 backup_notes() 함수에 보내요.
 
  ```python
  @app.route('/backup_notes', methods=['POST'])
@@ -156,9 +156,9 @@ def post_backup_notes():
 
 ______________________________
 
-문제는 backup_notes 함수가 실행 될 때다.  
-해당 코드를 보면 subcategory.Popen으로 shell 명령어를 실행 시키고 있는데 옵션을 보면 **shell=True**로 되어 있다.  
-즉, 쉘 코드를 입력하면 실행이 된다는 얘기다.
+문제는 backup_notes 함수가 실행 될 때예요.  
+해당 코드를 보면 subcategory.Popen으로 shell 명령어를 실행 시키고 있는데 옵션을 보면 **shell=True**로 되어 있어요.  
+즉, 쉘 코드를 입력하면 실행이 된다는 얘기예요.
 
  ```python  
  def backup_notes(timestamp):
@@ -173,15 +173,15 @@ ______________________________
 
  ## Payload
 
-값을 아래 이미지처럼 조작한 뒤 보내면 쉘을 서버에서 동작하게 할 수 있다.  
+값을 아래 이미지처럼 조작한 뒤 보내면 쉘을 서버에서 동작하게 할 수 있어요.  
 앞에 숫자는 timestamp 값으로 아무 값이나 넣어도 무관하며, curl을 사용해서  
-서버로부터 받는 데이터를 어디로 보낼지 지정한다(해당 url은 드림핵 툴즈에서 발급 받을 수 있다)  
+서버로부터 받는 데이터를 어디로 보낼지 지정해요(해당 url은 드림핵 툴즈에서 발급 받을 수 있어요)  
 
  <img src="/images/simple-note/burp.png" width="800" /> 
 
  ______________________________
 
-그럼 flag를 얻을 수 있다!!
+그럼 flag를 얻을 수 있어요!!
 
  <img src="/images/simple-note/flag.png" width="800" /> 
 

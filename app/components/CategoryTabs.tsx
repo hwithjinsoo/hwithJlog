@@ -25,15 +25,15 @@ export default function CategoryTabs({ posts }: Props) {
   return (
     <div>
       {/* 탭 */}
-      <div className="flex gap-4 border-b border-zinc-200 mb-8">
+      <div className="flex gap-4 border-b border-zinc-200 dark:border-zinc-700 mb-8">
         {Object.entries(categoryLabels).map(([key, label]) => (
           <button
             key={key}
             onClick={() => setSelected(key)}
             className={`pb-3 text-sm font-medium transition-colors ${
               selected === key
-                ? "border-b-2 border-black text-black"
-                : "text-zinc-400 hover:text-zinc-600"
+                ? "border-b-2 border-black dark:border-white text-black dark:text-white"
+                : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
             }`}
           >
             {label}
@@ -47,13 +47,13 @@ export default function CategoryTabs({ posts }: Props) {
           <Link
             key={post.slug.join("/")}
             href={`/posts/${post.slug.join("/")}`}
-            className="block p-6 bg-white rounded-xl border border-zinc-200 hover:border-zinc-400 transition-colors"
+            className="block p-6 bg-white dark:bg-white/5 backdrop-blur-sm rounded-xl border border-zinc-200 dark:border-white/10 hover:border-zinc-400 dark:hover:border-white/25 transition-colors"
           >
             <div className="flex gap-2 mb-3">
-              <span className="text-xs px-2 py-1 bg-zinc-100 rounded-full text-zinc-600">
+              <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
                 {categoryLabels[post.category] ?? post.category}
               </span>
-              <span className="text-xs px-2 py-1 bg-zinc-100 rounded-full text-zinc-600">
+              <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
                 {post.subcategory}
               </span>
             </div>

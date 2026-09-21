@@ -31,11 +31,11 @@ export default function PostHeader({ title }: Props) {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-white border-b border-zinc-200 z-50 px-8 py-2">
+    <div className="fixed top-0 left-0 w-full bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-50 px-8 py-2">
     <div className="max-w-5xl mx-auto flex items-center justify-between text-sm">
         <div className="w-8" />
         <div className="flex items-center gap-2">
-        <span className="font-semibold text-black">{title}</span>
+        <span className="font-semibold text-black dark:text-zinc-100">{title}</span>
         {currentSection && (
             <>
             <span className="text-zinc-400">/</span>
@@ -45,7 +45,7 @@ export default function PostHeader({ title }: Props) {
         </div>
         <button
         onClick={() => router.back()}
-        className="text-zinc-400 hover:text-black transition-colors text-lg font-light"
+        className="text-zinc-400 hover:text-black dark:hover:text-white transition-colors text-lg font-light"
         >
         ✕
         </button>

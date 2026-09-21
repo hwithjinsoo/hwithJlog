@@ -1,5 +1,5 @@
 ---
-title: "csrf-advanced"
+title: "csrf-advanced (dreamhack)"
 date: "2026-05-31"
 category: "ctf"
 subcategory: "web"
@@ -9,19 +9,19 @@ ______________________________
 
 ### Challenge Analysis
 이번 문제는 csrf를 통해 서버 내부에 작동중인 셀레니움을 통해 서버를 속여  
-여러 방화벽 장치를 우회해 admin 계정의 pw를 변경해 flag를 얻는 문제이다
+여러 방화벽 장치를 우회해 admin 계정의 pw를 변경해 flag를 얻는 문제예요
 
-페이로드 순서는 다음과 같다.  
-1. admin의 pw를 변경하기 위해 해당 권한을 애초에 가지고 있는 셀레니움 봇을 이용한다.
-2. xss 필터, 세션 검증, token 검증을 우회한다.
-3. token 검증 우회를 위해 admin 권한의 token을 생성한다.  
-4. 위 데이터로 페이로드를 작성해 익스플로잇 한다.
+페이로드 순서는 다음과 같아요.  
+1. admin의 pw를 변경하기 위해 해당 권한을 애초에 가지고 있는 셀레니움 봇을 이용해요.
+2. xss 필터, 세션 검증, token 검증을 우회해요.
+3. token 검증 우회를 위해 admin 권한의 token을 생성해요.  
+4. 위 데이터로 페이로드를 작성해 익스플로잇 해요.
 
 ______________________________
 
 ## source code analyze
 
-코드가 길어서 필요한 부분만 분석해보자.
+코드가 길어서 필요한 부분만 분석해볼께요.
 
 ```python
 def read_url(url, cookie={"name": "name", "value": "value"}):
@@ -114,8 +114,8 @@ app.run(host="0.0.0.0", port=8000)
 
 ______________________________
 
-셀레니움 설정이다. 이미 admin 권한을 가지고 있다.  
-또한 사용자의 입력 파라미터를 받아 로컬 주소로 서버에 전송한다.
+셀레니움 설정이에요. 이미 admin 권한을 가지고 있어요.  
+또한 사용자의 입력 파라미터를 받아 로컬 주소로 서버에 전송해요.
 
 ```python
 def read_url(url, cookie={"name": "name", "value": "value"}):
@@ -132,9 +132,9 @@ def check_csrf(param, cookie={"name": "name", "value": "value"}):
 
 ______________________________
 
-flag를 출력하는 페이지이다. **admin** 계정으로 로그인하고 해당 페이지로 접근하면 flag를 출력한다.  
+flag를 출력하는 페이지예요. **admin** 계정으로 로그인하고 해당 페이지로 접근하면 flag를 출력해요.  
 
-하단 코드는 xss 필터링이다. **frame, script, on** 태그를 제외하고 다른 태그를 사용하면 되겠다.
+하단 코드는 xss 필터링이에요. **frame, script, on** 태그를 제외하고 다른 태그를 사용하면 되겠어요.
 
 
 ```python
@@ -160,7 +160,7 @@ def vuln():
 
 ______________________________
 
-"/flag" 페이지는 사용자가 입력한 파라미터를 로컬로 받아서 서버에 전송한다.
+"/flag" 페이지는 사용자가 입력한 파라미터를 로컬로 받아서 서버에 전송해요.
 
 ```python
 @app.route("/flag", methods=["GET", "POST"])
@@ -177,8 +177,8 @@ def flag():
 
 ______________________________
 
-로그인 할 때 session_id를 생성하고 username과 사용자의 ip를 가져와서 md5로 해싱해 token을 생성한다.  
-admin 계정의 pw를 변경할때 우회(?)해야 할 것들이 여기 다 모여있다.  
+로그인 할 때 session_id를 생성하고 username과 사용자의 ip를 가져와서 md5로 해싱해 token을 생성해요.  
+admin 계정의 pw를 변경할때 우회(?)해야 할 것들이 여기 다 모여있어요.  
 
 ```python
 @app.route('/login', methods=['GET', 'POST'])
@@ -204,8 +204,8 @@ def login():
 
 ______________________________
 
-flag를 얻기 위한 핵심 라우트이다.  pw를 변경하기 전에 사용자의 session_id를 가져와 누구인지 확인하고  
-csrf_token을 가져와 csrftoken을 비교해 사용자를 검증한다.
+flag를 얻기 위한 핵심 라우트예요.  pw를 변경하기 전에 사용자의 session_id를 가져와 누구인지 확인하고  
+csrf_token을 가져와 csrftoken을 비교해 사용자를 검증해요.
 
 ```python
 @app.route("/change_password")
@@ -232,27 +232,27 @@ ______________________________
 
 ### Payload
 
-페이로드 순서를 봐보자.
-1. **admin** 세션을 가지고서 "/change_password" 페이지에 접근해야한다.  
-2. admin + 127.0.0.1 값을 해싱한 token을 제출해야한다
+페이로드 순서를 봐볼께요.
+1. **admin** 세션을 가지고서 "/change_password" 페이지에 접근해야해요.  
+2. admin + 127.0.0.1 값을 해싱한 token을 제출해야해요
 
-먼저 admin 세션을 가지고 페이지에 붙으려면 셀레니움 봇을 이용하면 된다.  
-"/flag" 페이지에서 이미지 태그로 /change_password로 붙으면 된다. 셀레니움 봇은 이미 admin 권한을 가지고 있기에  
-위와 같이 페이지에 붙으면 서버는 admin이라고 볼 수 밖에 없다.
+먼저 admin 세션을 가지고 페이지에 붙으려면 셀레니움 봇을 이용하면 돼요.  
+"/flag" 페이지에서 이미지 태그로 /change_password로 붙으면 돼요. 셀레니움 봇은 이미 admin 권한을 가지고 있기에  
+위와 같이 페이지에 붙으면 서버는 admin이라고 볼 수 밖에 없어요.
 
-다음으로 우회할껀 admin + 127.0.0.1을 해싱한 값을 토큰으로 제출하는것이다.  
-코드는 아래와 같다.  
+다음으로 우회할껀 admin + 127.0.0.1을 해싱한 값을 토큰으로 제출하는것이에요.  
+코드는 아래와 같아요.  
 ```python
 token = md5(("admin" + "127.0.0.1").encode()).hexdigest()
 
 print(token)
 ```
 
-위 데이터로 만든 페이로드는 다음과 같다. 
+위 데이터로 만든 페이로드는 다음과 같아요. 
 ```html
 <img src="/change_password?pw=ilovejinsoo&crsftoken=7505b9c72ab4aa94b1a4ed7b207b67fb>
 ```
 
-후에 "/" 페이지로 가면 flag가 출력되어있다!
+후에 "/" 페이지로 가면 flag가 출력되어있어요!
 <img src="/images/csrf_advanced/flag.png" width="800" />  
 

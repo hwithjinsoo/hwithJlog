@@ -56,10 +56,10 @@ export default async function PostPage({ params, searchParams }: Props) {
               type="password"
               name="password"
               placeholder="비밀번호"
-              className="border border-zinc-300 rounded-lg px-4 py-2"
+              className="border border-zinc-300 dark:border-zinc-600 dark:bg-transparent rounded-lg px-4 py-2"
               required
             />
-            <button type="submit" className="bg-black text-white rounded-lg py-2">
+            <button type="submit" className="bg-black text-white dark:bg-white dark:text-black rounded-lg py-2">
               확인
             </button>
           </form>
@@ -82,17 +82,17 @@ export default async function PostPage({ params, searchParams }: Props) {
     <div className="max-w-5xl mx-auto pt-20 px-8 pb-24"> {/* 본문 패딩 및 간격 조정 */}
       <div className="mb-8">
         <div className="flex gap-2 mb-4">
-          <span className="text-xs px-2 py-1 bg-zinc-100 rounded-full text-zinc-600">
+          <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
             {data.category}
           </span>
-          <span className="text-xs px-2 py-1 bg-zinc-100 rounded-full text-zinc-600">
+          <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
             {data.subcategory}
           </span>
         </div>
         <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
         <p className="text-zinc-400 text-sm">{data.date}</p>
       </div>
-      <div className="prose prose-zinc max-w-none">
+      <div className="prose prose-zinc dark:prose-invert max-w-none">
         <MDXRemote
           source={content}
           components={{

@@ -1,9 +1,19 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* 클래스 기반 다크모드: <html class="dark"> 일 때 dark: 유틸 활성화 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --page-bg: #EEEEDD;    /* 페이지 배경색 (타임라인 점 테두리 등에서 참조) */
+}
+
+.dark {
+  --background: #1b1a17;
+  --foreground: #e7e5e4; /* 따뜻한 밝은 회색 */
+  --page-bg: #1b1a17;
 }
 
 @theme inline {
@@ -79,6 +89,11 @@ code {
 .prose h2,
 .prose h2::before {
   color: #A06B3A;
+}
+
+.dark .prose h2,
+.dark .prose h2::before {
+  color: #d8a878;
 }
 
 @media (max-width: 768px) {

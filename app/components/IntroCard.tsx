@@ -11,7 +11,7 @@ export default function IntroCard() {
   }, []);
 
   return (
-    <div className="relative bg-white/40 backdrop-blur-sm border border-white/60 rounded-2xl overflow-hidden min-h-[320px] flex items-center">
+    <div className="relative bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/60 dark:border-white/10 rounded-2xl overflow-hidden min-h-[320px] flex items-center">
 
      {/* 왼쪽 꽃 */}
       <div
@@ -65,13 +65,12 @@ export default function IntroCard() {
             <path d="M8,24 Q8,9 24,9 Q40,9 40,24" fill="none" stroke="#e07090" strokeWidth="3.5" strokeLinecap="round"/>
             <path d="M12,24 Q12,13 24,13 Q36,13 36,24" fill="none" stroke="#e896b0" strokeWidth="3" strokeLinecap="round"/>
           </svg>
-          <p className="text-sm text-zinc-500 leading-relaxed mb-1 text-center" >Hello, World!</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-300 leading-relaxed mb-1 text-center" >Hello, World!</p>
         </div>
           <div className="flex justify-center mb-5">
-            <ul className="text-sm text-zinc-500 leading-relaxed space-y-1 text-left list-none">
+            <ul className="text-sm text-zinc-500 dark:text-zinc-300 leading-relaxed space-y-1 text-left list-none">
               <li>• CTF 문제 풀이과정을 올릴 블로그에요</li>
               <li>• 주로 web과 system 해킹을 다룰거에요</li>
-              <li>• 글 제목은 곧 ctf 문제의 제목이에요</li>
               <li>• 계속해서 다양한 기능이나 목록을 추가할 예정이에요</li>
               <li>• next.js로 개발하고 vercel로 배포 했어요</li>
             </ul>

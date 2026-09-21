@@ -24,7 +24,7 @@ export default async function CtfSubPage({ params }: Props) {
             <Link
               key={post.slug.join("/")}
               href={`/posts/${post.slug.join("/")}`}
-              className="block p-6 bg-white/40 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/60 transition-colors"
+              className="block p-6 bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-colors"
             >
               <h2 className="text-lg font-semibold mb-2">{post.title}</h2>
               <p className="text-zinc-500 text-sm mb-4">{post.description}</p>

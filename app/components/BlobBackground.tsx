@@ -1,6 +1,6 @@
 export default function BlobBackground() {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-[#EEEEDD]">
+    <div className="fixed inset-0 -z-10 overflow-hidden bg-[#EEEEDD] dark:bg-[#1b1a17]">
       {/* SVG Filter for metaball/gooey effect */}
       <svg className="absolute w-0 h-0">
         <defs>
@@ -22,55 +22,55 @@ export default function BlobBackground() {
       <div className="absolute inset-0" style={{ filter: "url(#goo)" }}>
         {/* Blob 1 - Top left corner */}
         {/* Edge softness control - blur-[95px] for soft boundary */}
-        <div className="blob blob-1 absolute w-[18vw] h-[18vw] rounded-full bg-[#FEFFD6] blur-[95px]" />
+        <div className="blob blob-1 absolute w-[18vw] h-[18vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[95px]" />
         
         {/* Blob 2 - Top center */}
         {/* Edge softness control - blur-[102px] for soft boundary */}
-        <div className="blob blob-2 absolute w-[22vw] h-[22vw] rounded-full bg-[#FEFFD6] blur-[102px]" />
+        <div className="blob blob-2 absolute w-[22vw] h-[22vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[102px]" />
         
         {/* Blob 3 - Top right */}
         {/* Edge softness control - blur-[90px] for soft boundary */}
-        <div className="blob blob-3 absolute w-[16vw] h-[16vw] rounded-full bg-[#FEFFD6] blur-[90px]" />
+        <div className="blob blob-3 absolute w-[16vw] h-[16vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[90px]" />
         
         {/* Blob 4 - Upper middle left */}
         {/* Edge softness control - blur-[98px] for soft boundary */}
-        <div className="blob blob-4 absolute w-[20vw] h-[20vw] rounded-full bg-[#FEFFD6] blur-[98px]" />
+        <div className="blob blob-4 absolute w-[20vw] h-[20vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[98px]" />
         
         {/* Blob 5 - Upper middle right */}
         {/* Edge softness control - blur-[92px] for soft boundary */}
-        <div className="blob blob-5 absolute w-[15vw] h-[15vw] rounded-full bg-[#FEFFD6] blur-[92px]" />
+        <div className="blob blob-5 absolute w-[15vw] h-[15vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[92px]" />
         
         {/* Blob 6 - Middle right edge */}
         {/* Edge softness control - blur-[108px] for soft boundary */}
-        <div className="blob blob-6 absolute w-[24vw] h-[24vw] rounded-full bg-[#FEFFD6] blur-[108px]" />
+        <div className="blob blob-6 absolute w-[24vw] h-[24vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[108px]" />
         
         {/* Blob 7 - Center left */}
         {/* Edge softness control - blur-[96px] for soft boundary */}
-        <div className="blob blob-7 absolute w-[19vw] h-[19vw] rounded-full bg-[#FEFFD6] blur-[96px]" />
+        <div className="blob blob-7 absolute w-[19vw] h-[19vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[96px]" />
         
         {/* Blob 8 - Center */}
         {/* Edge softness control - blur-[110px] for soft boundary */}
-        <div className="blob blob-8 absolute w-[21vw] h-[21vw] rounded-full bg-[#FEFFD6] blur-[110px]" />
+        <div className="blob blob-8 absolute w-[21vw] h-[21vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[110px]" />
         
         {/* Blob 9 - Center right */}
         {/* Edge softness control - blur-[94px] for soft boundary */}
-        <div className="blob blob-9 absolute w-[17vw] h-[17vw] rounded-full bg-[#FEFFD6] blur-[94px]" />
+        <div className="blob blob-9 absolute w-[17vw] h-[17vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[94px]" />
         
         {/* Blob 10 - Lower middle left */}
         {/* Edge softness control - blur-[104px] for soft boundary */}
-        <div className="blob blob-10 absolute w-[23vw] h-[23vw] rounded-full bg-[#FEFFD6] blur-[104px]" />
+        <div className="blob blob-10 absolute w-[23vw] h-[23vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[104px]" />
         
         {/* Blob 11 - Lower middle right */}
         {/* Edge softness control - blur-[93px] for soft boundary */}
-        <div className="blob blob-11 absolute w-[16vw] h-[16vw] rounded-full bg-[#FEFFD6] blur-[93px]" />
+        <div className="blob blob-11 absolute w-[16vw] h-[16vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[93px]" />
         
         {/* Blob 12 - Bottom left */}
         {/* Edge softness control - blur-[106px] for soft boundary */}
-        <div className="blob blob-12 absolute w-[25vw] h-[25vw] rounded-full bg-[#FEFFD6] blur-[106px]" />
+        <div className="blob blob-12 absolute w-[25vw] h-[25vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[106px]" />
         
         {/* Blob 13 - Bottom center */}
         {/* Edge softness control - blur-[91px] for soft boundary */}
-        <div className="blob blob-13 absolute w-[18vw] h-[18vw] rounded-full bg-[#FEFFD6] blur-[91px]" />
+        <div className="blob blob-13 absolute w-[18vw] h-[18vw] rounded-full bg-[#FEFFD6] dark:bg-[#3a3520] dark:opacity-50 blur-[91px]" />
       </div>
 
       <style>
