@@ -38,7 +38,7 @@ export default function Header() {
             width={40}
             height={30}
           />
-          <span className="text-base text-zinc-500 dark:text-zinc-300">write-up-log</span>
+          <span className="text-base text-zinc-500 dark:text-zinc-300">writeup.log</span>
         </Link>
 
         {/* 네비 */}

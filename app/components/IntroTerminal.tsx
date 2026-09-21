@@ -6,15 +6,16 @@ import { useEffect, useRef, useState } from "react";
 // kind: "cmd" = 프롬프트 뒤에 명령어 타이핑 / "out" = 출력 라인
 type Step = { kind: "cmd" | "out"; text: string };
 
-const PROMPT = "root@dev-web-blog ~ %";
+const PROMPT = "root@writeup.log ~ %";
 
 const SCRIPT: Step[] = [
   { kind: "cmd", text: "whoami" },
-  { kind: "out", text: "jin · 보안 공부하는 학생" },
+  { kind: "out", text: "열심히 살아가는 학생이에요" },
   { kind: "cmd", text: "cat about.md" },
-  { kind: "out", text: "CTF·워게임 문제 풀이를 기록하는 블로그예요" },
+  { kind: "out", text: "CTF·워게임의 write up을 올리는 블로그에요" },
   { kind: "out", text: "주로 web · system 해킹을 다뤄요" },
-  { kind: "out", text: "계속 새로운 기능도 붙여나갈 예정이에요" },
+  { kind: "cmd", text: "cat whyrano.txt" },
+  { kind: "out", text: "보안 세상은 깊고 공부는 끝이 없다 .." },
   { kind: "cmd", text: "cat stack.txt" },
   { kind: "out", text: "Next.js · TypeScript · Tailwind — Vercel 배포" },
 ];
