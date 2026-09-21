@@ -79,7 +79,7 @@ export default function IntroTerminal() {
         <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
         <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
         <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
-        <span className="ml-3 text-[11px] text-zinc-400 font-mono select-none">jin — zsh</span>
+        <span className="ml-3 text-[11px] text-zinc-400 font-mono select-none">root — zsh</span>
       </div>
 
       {/* 본문 */}
