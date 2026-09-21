@@ -1,7 +1,9 @@
 import { getAllPosts } from "./lib/posts";
-import CTFGraph from "./components/CTFGraph";
+// import CTFGraph from "./components/CTFGraph"; // 원복용: 라인 그래프로 되돌리려면 이 줄과 아래 사용부를 복구
+import ContributionHeatmap from "./components/ContributionHeatmap";
 // import RunningCat from "./components/RunningCat";
-import IntroCard from "./components/IntroCard";
+// import IntroCard from "./components/IntroCard"; // 원복용: 꽃 인트로카드로 되돌리려면 이 줄과 아래 사용부 복구
+import IntroTerminal from "./components/IntroTerminal";
 import PostTimeline from "./components/PostTimeline";
 
 export default function Home() {
@@ -14,9 +16,9 @@ export default function Home() {
       {/* 왼쪽 메인 */}
       <div className="w-full lg:flex-1 min-w-0 flex-col gap-6">
         <div className="mb-6">
-          <CTFGraph posts={ctfPosts} />
+          <ContributionHeatmap posts={ctfPosts} />
           <div className="mt-6"></div>
-          <IntroCard />
+          <IntroTerminal />
         </div>
           <div>
           </div>
