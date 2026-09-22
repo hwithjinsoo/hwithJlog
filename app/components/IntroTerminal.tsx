@@ -4,23 +4,23 @@ import { useEffect, useRef, useState } from "react";
 
 // 터미널에 순서대로 타이핑될 스크립트
 // kind: "cmd" = 프롬프트 뒤에 명령어 타이핑 / "out" = 출력 라인
-type Step = { kind: "cmd" | "out"; text: string };
+type Step = { kind: "cmd" | "out"; text: string; href?: string };
 
 const PROMPT = "root@writeup.log ~ %";
 
 const SCRIPT: Step[] = [
   { kind: "cmd", text: "whoami" },
   { kind: "out", text: "열심히 살아가는 학생이에요" },
+  { kind: "cmd", text: "cat github.txt" },
+  { kind: "out", text: "https://github.com/hwithjinsoo", href: "https://github.com/hwithjinsoo" },
   { kind: "cmd", text: "cat about.md" },
   { kind: "out", text: "CTF·워게임의 write up을 올리는 블로그에요" },
   { kind: "out", text: "주로 web · system 해킹을 다뤄요" },
   { kind: "cmd", text: "cat whyrano.txt" },
   { kind: "out", text: "보안 세상은 깊고 공부는 끝이 없다 .." },
-  { kind: "cmd", text: "cat stack.txt" },
-  { kind: "out", text: "Next.js · TypeScript · Tailwind — Vercel 배포" },
 ];
 
-type Rendered = { kind: "cmd" | "out"; text: string };
+type Rendered = { kind: "cmd" | "out"; text: string; href?: string };
 
 export default function IntroTerminal() {
   const [rendered, setRendered] = useState<Rendered[]>([]);
@@ -49,10 +49,14 @@ export default function IntroTerminal() {
       const step = SCRIPT[si];
       ci += 1;
       const partial = step.text.slice(0, ci);
+      // 타이핑 중에는 링크로 만들지 않고, 라인이 끝났을 때만 href를 붙인다
       setRendered([...finished, { kind: step.kind, text: partial }]);
 
       if (ci >= step.text.length) {
-        finished.push({ kind: step.kind, text: step.text });
+        finished.push({ kind: step.kind, text: step.text, href: step.href });
+        // 완성된 라인은 href가 붙은 finished 기준으로 다시 렌더해야 링크가 생긴다.
+        // (이걸 빼면 마지막 줄은 href 없는 partial 객체 상태로 남는다)
+        setRendered([...finished]);
         si += 1;
         ci = 0;
         // 라인 끝난 뒤 잠깐 멈춤 (명령어면 조금 더 길게)
@@ -98,7 +102,18 @@ export default function IntroTerminal() {
           }
           return (
             <div key={i} className="whitespace-pre-wrap break-words term-out pl-1">
-              {l.text}
+              {l.href ? (
+                <a
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="term-link"
+                >
+                  {l.text}
+                </a>
+              ) : (
+                l.text
+              )}
               {cursor}
             </div>
           );
@@ -124,6 +139,18 @@ export default function IntroTerminal() {
         .dark .term-cmd { color: #f4f4f5; }
         .term-out { color: #6f6a5e; }
         .dark .term-out { color: #a1a1aa; }
+        /* 링크: 글자색은 본문(term-out) 그대로 상속, 밑줄만 추가 */
+        .term-link {
+          color: inherit;
+          cursor: pointer;
+          text-decoration: underline;
+          text-decoration-thickness: 1px;
+          text-underline-offset: 3px;
+          text-decoration-color: currentColor;
+          opacity: 0.85;
+          transition: opacity 0.15s ease;
+        }
+        .term-link:hover { opacity: 1; }
         .term-cursor {
           display: inline-block;
           width: 8px;

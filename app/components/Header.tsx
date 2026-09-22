@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
@@ -29,24 +28,35 @@ export default function Header() {
   return (
     <header className="bg-transparent">
       <div className="max-w-5xl mx-auto px-8 py-4 flex items-center gap-8">
-        {/* 로고 */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image 
-            src="/plzjin.png"
-            alt="hwithJlog 아이콘"
-            className="rounded-full object-cover"
-            width={40}
-            height={30}
-          />
-          <span className="text-base text-zinc-500 dark:text-zinc-300">writeup.log</span>
+        {/* 로고 (= Home) */}
+        <Link
+          href="/"
+          aria-label="Home"
+          title="Home"
+          aria-current={pathname === "/" ? "page" : undefined}
+          className={`flex items-center transition-opacity hover:opacity-80 ${
+            pathname === "/" ? "opacity-100" : "opacity-70"
+          }`}
+        >
+          {/* 벡터라 어떤 화면 배율에서도 선명함 */}
+          <svg
+            width={32}
+            height={32}
+            viewBox="0 0 32 32"
+            role="img"
+            aria-label="hwithJlog"
+            className="shrink-0"
+          >
+            <g fill="none" strokeLinecap="butt">
+              <path d="M2 29V18a14 14 0 0 1 28 0v11" stroke="#D4547A" strokeWidth={4} />
+              <path d="M6.5 29V18a9.5 9.5 0 0 1 19 0v11" stroke="#E07090" strokeWidth={3} />
+              <path d="M10 29V18a6 6 0 0 1 12 0v11" stroke="#E896B0" strokeWidth={2} />
+            </g>
+          </svg>
         </Link>
 
         {/* 네비 */}
         <nav className="flex items-center gap-6 text-sm flex-1">
-          <Link href="/" className={pathname === "/" ? "text-black dark:text-white font-semibold border-b-2 border-black dark:border-white pb-1" : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 pb-1 transition-colors"}>
-            Home
-          </Link>
-
           {/* CTF 드롭다운 */}
           <div className="relative">
             <button
