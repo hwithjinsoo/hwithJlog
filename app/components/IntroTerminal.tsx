@@ -15,7 +15,9 @@ const SCRIPT: Step[] = [
   { kind: "out", text: "https://github.com/hwithjinsoo", href: "https://github.com/hwithjinsoo" },
   { kind: "cmd", text: "cat about.md" },
   { kind: "out", text: "CTF·워게임의 write up을 올리는 블로그에요" },
-  { kind: "out", text: "주로 web · system 해킹을 다뤄요" },
+  { kind: "cmd", text: "cat root-me/writeup.md" },
+  { kind: "out", text: "cat: root-me/writeup.md: Permission denied" },
+  { kind: "out", text: "사이트 정책에 맞춰 Root-Me write up은 잠겨있어요" },
   { kind: "cmd", text: "cat whyrano.txt" },
   { kind: "out", text: "보안 세상은 깊고 공부는 끝이 없다 .." },
 ];
@@ -77,7 +79,7 @@ export default function IntroTerminal() {
   const lastIdx = rendered.length - 1;
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/60 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-sm min-h-[320px] flex flex-col">
+    <div className="rounded-2xl overflow-hidden border border-white/60 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-sm min-h-[384px] flex flex-col">
       {/* 타이틀바 */}
       <div className="term-bar flex items-center gap-2 px-4 h-9 border-b border-white/10">
         <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
