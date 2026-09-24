@@ -85,7 +85,7 @@ const POSTS_ROOT = path.join(process.cwd(), "app", "posts");
 const ENV_PATH = path.join(process.cwd(), ".env.local");
 const PAGE_PATH = path.join(process.cwd(), "app", "posts", "[...slug]", "page.tsx");
 const STUB_NOTICE =
-  "이 글은 비밀번호로 보호되어 있어요. hwithJlog에서 비밀번호를 입력하면 전체 내용을 볼 수 있습니다.\n";
+  "이 글은 비밀번호로 보호되어 있어요. [writeup.log](https://hwith-jlog.vercel.app/)에서 비밀번호를 입력하면 전체 내용을 볼 수 있습니다.\n";
 
 function fail(msg) {
   console.error("✗ " + msg);

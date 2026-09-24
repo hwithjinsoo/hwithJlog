@@ -17,6 +17,7 @@ type Props = {
 
 // slug -> 실제 본문이 담긴 env var 키. protected 글이 늘어나면 여기에 추가.
 const PROTECTED_CONTENT_ENV_MAP: Record<string, string> = {
+  "ctf/web/JWT-Unsecure-File-Signature(root-me)": "PROTECTED_CONTENT_CTF_WEB_JWT_UNSECURE_FILE_SIGNATURE_ROOT_ME_B64",
   "ctf/web/API-Mass-Assignment(root-me)": "PROTECTED_CONTENT_API_MASS_ASSIGNMENT_B64",
 };
 
