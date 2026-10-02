@@ -11,7 +11,7 @@ type Props = {
 const categoryLabels: Record<string, string> = {
   all: "전체",
   ctf: "CTF 풀이",
-  cs: "컴퓨터 지식",
+  notes: "Notes",
 };
 
 export default function CategoryTabs({ posts }: Props) {
@@ -53,9 +53,11 @@ export default function CategoryTabs({ posts }: Props) {
               <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
                 {categoryLabels[post.category] ?? post.category}
               </span>
-              <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
-                {post.subcategory}
-              </span>
+              {post.subcategory && (
+                <span className="text-xs px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
+                  {post.subcategory}
+                </span>
+              )}
             </div>
             <h2 className="text-lg font-semibold mb-2">{post.title}</h2>
             <p className="text-zinc-500 text-sm mb-4">{post.description}</p>

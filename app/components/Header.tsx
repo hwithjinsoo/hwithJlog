@@ -7,12 +7,10 @@ import ThemeToggle from "./ThemeToggle";
 
 // 카테고리 헤더 추가 부분
 const ctfSubcategories = ["web", "system", "forensics"];
-const csSubcategories = ["architecture", "network", "os"];
 const snippetSubcategories = ["web", "system"]; 
 
 export default function Header() {
   const [ctfOpen, setCtfOpen] = useState(false);
-  const [csOpen, setCsOpen] = useState(false);
   const [snippetOpen, setSnippetOpen] = useState(false);
   const pathname = usePathname();
 
@@ -60,7 +58,7 @@ export default function Header() {
           {/* CTF 드롭다운 */}
           <div className="relative">
             <button
-                onClick={() => { setCtfOpen(!ctfOpen); setCsOpen(false); setSnippetOpen(false); }}
+                onClick={() => { setCtfOpen(!ctfOpen); setSnippetOpen(false); }}
                 className={navClass("/ctf")}
               >
               CTF
@@ -86,34 +84,14 @@ export default function Header() {
             )}
           </div>
 
-          {/* CS 드롭다운 */}
-          <div className="relative">
-            <button
-              // CS 버튼 onClick 수정
-              onClick={() => { setCsOpen(!csOpen); setCtfOpen(false); setSnippetOpen(false); }}
-              className={navClass("/cs")}
-            >
-              CS
-              <span className="text-xs">{csOpen ? "▲" : "▼"}</span>
-            </button>
-            {csOpen && (
-              <div 
-                className="absolute top-8 left-0 bg-white/40 dark:bg-zinc-800/80 backdrop-blur-sm border border-white/60 dark:border-white/10 rounded-lg py-2 w-32 z-10"
-                onMouseLeave={() => setCsOpen(false)}
-              >
-                {csSubcategories.map((sub) => (
-                  <Link
-                    key={sub}
-                    href={`/cs/${sub}`}
-                    onClick={() => setCsOpen(false)}
-                    className="block px-4 py-2 text-sm hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
-                  >
-                    {sub}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Notes (드롭다운 없이 바로 이동) */}
+          <Link
+            href="/notes"
+            onClick={() => { setCtfOpen(false); setSnippetOpen(false); }}
+            className={navClass("/notes")}
+          >
+            Notes
+          </Link>
 
           {/* 다크모드 토글 */}
           <ThemeToggle />
