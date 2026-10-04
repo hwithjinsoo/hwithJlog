@@ -1,0 +1,71 @@
+---
+title: "jwt의 검증 및 서명 과정"
+date: "2026-10-02"
+category: "notes"
+subcategory: "auth"
+description: "rs256 + jwk"
+---
+
+______________________________
+
+## JWT?
+jwt(Json Web Token)는 인증에 필요한 정보들을 암호화 시킨 토큰이에요.  
+클라이언트쪽에서 해당 토큰을 넘기고 서버가 받아서 검증 후 인증해주는 방식이에요.  
+
+위에서 설명 한 것처럼 jwt는 클라이언트에서 보내기 때문에  
+내용을 마음대로 수정해서 서버에게 보낼 수 있어요.  
+
+따라서 서버는 클라이언트 측에서 토큰을 함부로 수정할 수 없도록 서명(signature)를 이용해  
+토큰의 무결성을 검증해요.  
+
+______________________________
+
+## JWT 구조
+```
+jwt = header.payload.signature
+```
+jwt를 해체 해서 보면 온점으로 각각 구분되어 있고 총 세 개로 나뉘어요
+이제 각각의 구조를 살펴볼께요.  
+
+#### header
+- 헤더에는 메타데이터 및 어떤 알고리즘을 사용해 서명했는지 등의 정보가 담겨있어요.  
+- 헤더는 base64로 인코딩 되어 있기 때문에 쉽게 원문 확인이 가능해요.  
+
+#### payload  
+- 페이로드에는 실제 담고 싶은 정보 즉, username, time 등의 정보가 담겨있어요.  
+- 페이로드도 base64로 인코딩 되어 있기 때문에 마찬가지로 쉽게 원문 확인이 가능해요.
+
+#### signature
+- 시그니처는 헤더와 페이로드가 변조되지 않았음을 보장하는 서명 값이에요.  
+- signature = HMAC( secret_key, Base64URL(header) + Base64URL(payload) )
+- 위와 같이 헤더와 페이로드를 각각 **Base64URL** 인코딩 한 뒤, **secret key**와 함께 HMAC 해싱하여 시그니처를 생성해요.
+    > 바로 이게 jwt에서 **서명**이라고 불리는 과정이에요.
+- 헤더나 페이로드 둘 중 하나라도 값이 변하면 시그니처의 값이 변하기 때문에 서버는 변조 된 토큰이란걸 바로 알 수 있어요.
+
+______________________________
+
+## HS256(대칭키)의 서명 및 검증 과정
+- 서명 과정
+    1. signature_input = ( Base64URL(header) + "." + Base64URL(payload) )
+    2. signature = HMAC-SHA256( secret_key, signature_input )
+
+- 검증 과정
+    1. 서버가 jwt를 받으면 클라이언트와 같은 대칭키로 다시 한 번 서명을 해요.
+    2. 서버가 다시 서명한 값과 클라이언트측에서 보낸 서명값이 같다면 변조되지 않은 jwt라고 판단해요.
+
+## RS256(비대칭키)의 서명 및 검증 과정
+- 서명 과정
+    1. signature_input = ( Base64URL(header) + "." + Base64URL(payload) )
+    2. hash = SHA256( signature_input )
+    3. signature = RSA-sign( private_key + hash )
+
+- 검증 과정
+    1. 서버가 jwt를 받으면 위의 서명 과정 2번 과정까지 수행해서 첫번째 hash A를 만들어요.
+    2. 클라이언트한테 받은 시그니처에서 원본 hash 값을 추출해요. 과정은 아래와 같아요.
+        > hash B = RSA_recover( public_key, signature )
+    3. hash A == hash B 라면 변조되지 않은 jwt라고 판단해요.
+
+
+
+
+

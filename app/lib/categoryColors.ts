@@ -6,6 +6,7 @@ export const categoryColors = {
   web:       { light: "#A83A52", dark: "#D66E86" }, // 와인 / 버건디
   system:    { light: "#3F6E97", dark: "#86A8CB" }, // 슬레이트 블루
   forensics: { light: "#BE6420", dark: "#DE9A4E" }, // 러스트 / 번트 오렌지
+  notes:     { light: "#4E7D5B", dark: "#7FB08C" }, // 세이지 그린 (Notes 전용)
 } as const;
 
 const fallback = { light: "#8a8a8a", dark: "#9a9a9a" };

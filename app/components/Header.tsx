@@ -25,7 +25,12 @@ export default function Header() {
 
   return (
     <header className="bg-transparent">
-      <div className="max-w-5xl mx-auto px-8 py-4 flex items-center gap-8">
+      <div
+        className={`${
+          // 홈은 3단 레이아웃이라 컨테이너가 넓음 → 헤더 폭도 맞춰서 로고/메뉴가 본문 왼쪽 끝과 정렬되게
+          pathname === "/" ? "max-w-[1400px]" : "max-w-5xl"
+        } mx-auto px-8 py-4 flex items-center gap-8`}
+      >
         {/* 로고 (= Home) */}
         <Link
           href="/"
@@ -55,13 +60,13 @@ export default function Header() {
 
         {/* 네비 */}
         <nav className="flex items-center gap-6 text-sm flex-1">
-          {/* CTF 드롭다운 */}
+          {/* Write-Up 드롭다운 (라우트는 /ctf 그대로) */}
           <div className="relative">
             <button
                 onClick={() => { setCtfOpen(!ctfOpen); setSnippetOpen(false); }}
                 className={navClass("/ctf")}
               >
-              CTF
+              Write-Up
               <span className="text-xs">{ctfOpen ? "▲" : "▼"}</span>
             </button>
             {ctfOpen && (

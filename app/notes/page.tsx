@@ -19,12 +19,11 @@ export default function NotesPage() {
             <Link
               key={post.slug.join("/")}
               href={`/posts/${post.slug.join("/")}`}
-              className="block p-6 bg-white/40 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/60 transition-colors"
+              className="block p-6 bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-colors"
             >
               {post.subcategory && (
-                <span className="inline-block text-xs px-2 py-1 mb-3 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-600 dark:text-zinc-300">
-                  {post.subcategory}
-                </span>
+                // 태그는 CTF 목록 카드 톤을 해치지 않게 날짜랑 같은 은은한 텍스트로
+                <p className="text-zinc-400 text-xs mb-2">#{post.subcategory}</p>
               )}
               <h2 className="text-lg font-semibold mb-2">{post.title}</h2>
               <p className="text-zinc-500 text-sm mb-4">{post.description}</p>

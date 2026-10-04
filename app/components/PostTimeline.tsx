@@ -96,7 +96,12 @@ export default function PostTimeline({ posts }: Props) {
   }, [posts, maxH]);
 
   if (posts.length === 0) {
-    return <p className="text-sm text-zinc-400">아직 작성된 글이 없습니다.</p>;
+    // 빈 상태도 카드 모양으로 둬서 옆 타임라인이랑 높이/톤이 덜 튀게
+    return (
+      <div className="p-4 rounded-xl border border-dashed border-zinc-300 dark:border-white/15 text-xs text-zinc-400">
+        아직 작성된 글이 없습니다.
+      </div>
+    );
   }
 
   // 스크롤 가능할 때만 가장자리 페이드 적용 (위: 스크롤 내렸을 때만, 아래: 끝 아닐 때만)
@@ -129,7 +134,11 @@ export default function PostTimeline({ posts }: Props) {
 
         <div className="flex flex-col gap-5">
           {posts.map((post) => {
-            const dotColor = categoryColor(post.subcategory, dark);
+            // Notes는 태그가 제각각이라 카테고리 색 하나로 통일
+            const dotColor = categoryColor(
+              post.category === "notes" ? "notes" : post.subcategory,
+              dark
+            );
             return (
               <Link
                 key={post.slug.join("/")}
@@ -144,7 +153,7 @@ export default function PostTimeline({ posts }: Props) {
                 />
                 <div className="p-4 bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10 rounded-xl group-hover:bg-white/60 dark:group-hover:bg-white/10 transition-colors">
                   <p className="text-xs mb-1 font-medium" style={{ color: dotColor }}>
-                    {post.subcategory}
+                    {post.subcategory || post.category}
                   </p>
                   <p className="text-sm font-medium leading-snug">{post.title}</p>
                   <p className="text-xs text-zinc-400 mt-2">{post.date}</p>
