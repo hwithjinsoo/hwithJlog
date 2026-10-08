@@ -14,10 +14,11 @@ const SCRIPT: Step[] = [
   { kind: "cmd", text: "cat github.txt" },
   { kind: "out", text: "https://github.com/hwithjinsoo", href: "https://github.com/hwithjinsoo" },
   { kind: "cmd", text: "cat about.md" },
-  { kind: "out", text: "CTF·워게임의 write up을 올리는 블로그에요" },
+  { kind: "out", text: "ctf·워게임의 write up을 올리는 블로그에요" },
   { kind: "cmd", text: "cat root-me/writeup.md" },
   { kind: "out", text: "cat: root-me/writeup.md: Permission denied" },
   { kind: "out", text: "사이트 정책에 맞춰 Root-Me write up은 잠겨있어요" },
+  { kind: "out", text: "라이트업이 필요하다면 'hwithjinsoo@gmail.com'에 메일 남겨주세요" },
   { kind: "cmd", text: "cat whyrano.txt" },
   { kind: "out", text: "보안 세상은 깊고 공부는 끝이 없다 .." },
 ];
