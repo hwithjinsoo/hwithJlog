@@ -74,6 +74,35 @@ pre::after {
   color: #888;
 }
 
+/* 코드박스 가로 스크롤바: 브라우저 기본 흰 바 대신 박스 톤(헤더 갈색 계열)에 맞춘 얇은 바 */
+/* Chrome/Safari/Edge */
+pre::-webkit-scrollbar {
+  height: 10px;
+}
+pre::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 0 14px;              /* 둥근 모서리에 바가 닿지 않게 좌우 여백 */
+}
+pre::-webkit-scrollbar-thumb {
+  background-color: #5a5249;   /* 헤더(#403a33)보다 살짝 밝게 */
+  border-radius: 999px;
+  border: 3px solid transparent; /* 투명 테두리로 실제 바를 4px 정도로 얇게 */
+  background-clip: padding-box;
+}
+pre::-webkit-scrollbar-thumb:hover {
+  background-color: #7a6f62;
+}
+pre::-webkit-scrollbar-corner {
+  background: transparent;
+}
+/* Firefox (webkit 스크롤바 미지원 브라우저만) */
+@supports not selector(::-webkit-scrollbar) {
+  pre {
+    scrollbar-width: thin;
+    scrollbar-color: #5a5249 transparent;
+  }
+}
+
 code {
   font-size: 0.875rem;
   line-height: 1.5;

@@ -1,0 +1,400 @@
+---
+title: "PATCH-1 (dreamhack)"
+date: "2026-10-20"
+category: "ctf"
+subcategory: "web"
+description: "해당 코드에 존재하는 취약점들을 패치해보세요."
+---
+______________________________
+
+## Challenge Analysis
+이번 문제에는 한 서비스의 소스 코드가 주어지고  
+여기에서 여러 취약점을 직접 찾아 패치한 뒤 제출하면 어떤게 아직 패치가 안 됐는지 알려주고  
+모든 패치가 끝나면 FLAG를 얻을 수 있는 문제에요.  
+소스 코드를 봐볼께요.
+
+______________________________
+
+## source code analyze
+
+```python
+
+app = Flask(__name__)
+app.secret_key = "Th1s_1s_V3ry_secret_key"
+
+def get_db():
+  db = getattr(g, '_database', None)
+  if db is None:
+    db = g._database = sqlite3.connect(os.environ['DATABASE'])
+  db.row_factory = sqlite3.Row
+  return db
+
+def query_db(query, args=(), one=False):
+  cur = get_db().execute(query, args)
+  rv = cur.fetchall()
+  cur.close()
+  return (rv[0] if rv else None) if one else rv
+
+@app.teardown_appcontext
+def close_connection(exception):
+  db = getattr(g, '_database', None)
+  if db is not None:
+    db.close()
+
+@app.route('/')
+def index():
+  return "api-server"
+
+@app.route('/api/me')
+def me():
+  if session.get('uid'):
+    return jsonify(userid=session['uid'])
+  return jsonify(userid=None)
+
+@app.route('/api/login', methods=['POST'])
+def login():
+  userid = request.form.get('userid', '')
+  password = request.form.get('password', '')
+  if userid and password:
+    ret = query_db(f"SELECT * FROM users where userid='{userid}' and password='{hashlib.sha256(password.encode()).hexdigest()}'" , one=True)
+    if ret:
+      session['uid'] = ret[0]
+      return jsonify(result="success", userid=ret[0])
+  return jsonify(result="fail")
+
+@app.route('/api/logout')
+def logout():
+  session.pop('uid', None)
+  return jsonify(result="success")
+
+@app.route('/api/join', methods=['POST'])
+def join():
+  userid = request.form.get('userid', '')
+  password = request.form.get('password', '')
+  if userid and password:
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("Insert into users values(?, ?);", (userid, hashlib.sha256(password.encode()).hexdigest()))
+    conn.commit()
+    return jsonify(result="success")
+  return jsonify(result="error")
+
+@app.route('/api/memo/add', methods=['PUT'])
+def memoAdd():
+  if not session.get('uid'):
+    return jsonify(result="no login")
+
+  userid = session.get('uid')
+  title = request.form.get('title')
+  contents = request.form.get('contents')
+
+  if title and contents:
+    conn = get_db()
+    cur = conn.cursor()
+    ret = cur.execute("Insert into memo(userid, title, contents) values(?, ?, ?);", (userid, title, contents))
+    conn.commit()
+    return jsonify(result="success", memoidx=ret.lastrowid)
+  return jsonify(result="error")
+
+@app.route('/api/memo/<idx>', methods=['GET'])
+def memoView(idx):
+  mode = request.args.get('mode', 'json')
+  ret = query_db("SELECT * FROM memo where idx=" + idx)[0]
+  if ret:
+    userid = ret['userid']
+    title = ret['title']
+    contents = ret['contents']
+    if mode == 'html':
+      template = ''' Written by {userid}<h3>{title}</h3>
+      <pre>{contents}</pre>
+      '''.format(title=title, userid=userid, contents=contents)
+      return render_template_string(template)
+    else:
+      return jsonify(result="success",
+        userid=userid,
+        title=title,
+        contents=contents)
+  return jsonify(result="error")
+
+@app.route('/api/memo/<int:idx>', methods=['PUT'])
+def memoUpdate(idx):
+  if not session.get('uid'):
+    return jsonify(result="no login")
+
+  ret = query_db('SELECT * FROM memo where idx=?', [idx,])[0]
+  userid = session.get('uid')
+  title = request.form.get('title')
+  contents = request.form.get('contents')
+
+  if ret and title and contents:
+    conn = get_db()
+    cur = conn.cursor()
+    updateRet = cur.execute("UPDATE memo SET title=?, contents=? WHERE idx=?",(title, contents, idx))
+    conn.commit()
+    if updateRet:
+      return jsonify(result="success")
+  return jsonify(result="error")
+```
+
+______________________________
+
+## Payload
+
+패치를 하지 않고 주어진 소스 코드를 그대로 제출한 결과에요.
+
+```
+
+ [FAIL]
+
+ - SLA(7/7): SLA PASS
+ - VULN(5)
+   - Hard-coded Key
+   - SQL Injection
+   - Server-Side Template Injection
+   - Cross Site Scripting
+   - Memo Update IDOR
+```
+
+패치 점검 결과에서 많은 정보를 얻을 수 있었어요.  
+우선 **SLA(7/7): SLA PASS**이 있는데  
+SLA은 소스 코드를 수정(==patch)를 하더라도 기존 기능이 잘 작동하는지 검사하는 테스트 기준이에요.  
+
+**VULN** 항목엔 우리가 패치해야 할 취약점이 나오는데  
+목록을 보면 유명한 취약점 5개가 있어요. 하나씩 찾아볼께요.  
+
+______________________________
+
+소스 코드를 살펴보다가 **render_template_string** 함수를 찾았어요.  
+이 함수는 문자열을 그대로 렌더링 하는 함수에요.  
+
+만약 이 함수의 인자를 코드와 데이터 부분을 따로 구분 시켜놓지 않는다면,  
+ssti 취약점이 발생할 수 있어요.  
+따라서 해당 함수가 있는 endpoint 먼저 살펴볼께요
+
+```python
+
+# Before Patch
+@app.route('/api/memo/<idx>', methods=['GET'])
+def memoView(idx):
+  mode = request.args.get('mode', 'json')
+  # ssti 찾다가 sql injection 발생 지점도 하나 찾았어요.
+  # 아래와 같은 코드는 idx에 **'**를 넣어 기존 Sql 구문을 조작할 수 있어요.
+  # 파라미터 바인딩을 사용해서 값을 받아야해요.
+  # 또한 idx 변수에 문자가 들어와야 할 기능이 없어보이니 **int형**만 들어오도록 지정하는거도 좋아보여요.
+  ret = query_db("SELECT * FROM memo where idx=" + idx)[0]
+  if ret:
+    userid = ret['userid']
+    title = ret['title']
+    contents = ret['contents']
+    if mode == 'html':
+      # 사용자로부터 받은 값을 format()으로 템플릿에 삽입하고 있어요.
+      # format()에는 autoescape 기능이 없기 떄문에 특수문자를 넣으면 브라우저는 그대로 해석해요.
+      # 즉 여기가 xss가 발생하는 지점이에요.
+      # jinja2에서 변수를 받으면 autoescape 처리를 해주기 때문에 해당 문법으로 변경해줘야해요.
+      template = ''' Written by {userid}<h3>{title}</h3>
+      <pre>{contents}</pre>
+      '''.format(title=title, userid=userid, contents=contents)
+      # format으로 변수를 미리 입력받은 뒤 그걸 그대로 render_template_string()로 render 하고 있어요.
+      # 실행해야할 코드 부분과 입력 받은 데이터가 구분되어 있지 않다는 뜻이에요.
+      # 그럼 **{{7*7}}와 같이 Jinja2 문법을 넣으면 서버가 코드로 인식하고 실행해버려요.
+      # 이게 바로 ssti 취약점이에요.
+      # render_template_string()의 인자에서 실행할 코드와 데이터를 나눠줘야해요.
+      return render_template_string(template)
+    else:
+      return jsonify(result="success",
+        userid=userid,
+        title=title,
+        contents=contents)
+  return jsonify(result="error")
+```
+
+```python
+
+# After Patch
+@app.route('/api/memo/<int:idx>', methods=['GET'])
+def memoView(idx):
+  mode = request.args.get('mode', 'json')
+  ret = query_db("SELECT * FROM memo where idx=?", [idx,])[0]
+  if ret:
+    userid = ret['userid']
+    title = ret['title']
+    contents = ret['contents']
+    if mode == 'html':
+      template = ''' Written by {{userid}}<h3>{{title}}</h3>
+      <pre>{{contents}}</pre>
+      '''
+      return render_template_string(template, title=title, userid=userid, contents=contents)
+    else:
+      return jsonify(result="success",
+        userid=userid,
+        title=title,
+        contents=contents)
+  return jsonify(result="error")
+```
+
+패치 후 제출 한 결과에요.  
+SLA 테스트 Pass 했고  
+xss와 ssti가 VULN 항목에서 사라졌지만 SQL injection은 그대로에요. 
+
+다른 endpoint에 해당 취약점이 더 있는 거 같아요.  
+이어서 다음 취약점을 찾아볼께요.
+```
+
+[FAIL]
+
+ - SLA(7/7): SLA PASS
+ - VULN(3)
+   - Hard-coded Key
+   - SQL Injection
+   - Memo Update IDOR
+```
+
+______________________________
+
+소스 상단에 대놓고 서명키가 하드코딩 되어 있어요.  
+이게 탈취당하면 사용자 uid가 의미가 없어져요.
+
+```python
+
+# Before Patch
+app.secret_key = "Th1s_1s_V3ry_secret_key"
+```
+
+```python
+
+# After Patch
+app.secret_key = os.urandom(32)
+```
+
+패치 후 제출 한 결과에요.  
+마찬가지로 SLA 테스트 통과했고  
+VULN 목록에서 **Hard-coded Key**가 사라졌어요.  
+다음 취약점 찾아볼께요.
+
+```
+
+[FAIL]
+
+ - SLA(7/7): SLA PASS
+ - VULN(2)
+   - SQL Injection
+   - Memo Update IDOR
+```
+
+______________________________
+
+IDOR 취약점은 보통 사용자 id 혹은 번호에 따라 조회가 가능한 기능이 있는곳에 있기에  
+메모 수정이 구현 되어있는 해당 endpoint를 살펴봤어요.
+
+```python
+
+# Before Patch
+@app.route('/api/memo/<int:idx>', methods=['PUT'])
+def memoUpdate(idx):
+  # 사용자가 로그인 했는지만 확인하고
+  # 메모의 작성자 id와 현재 메모를 수정하려는 사용자의 id가 동일한지 검사하는 로직이 없어요.
+  # 이러면 한 사용자가 식별자(idx)만 바꿔가며 다른 사람들의 메모를 수정하는게 가능해요.
+  # 이와 같이 식별자만 바꾸면 본인 것이 아닌 리소스에 접근 가능한 취약점이 IDOR이에요. 
+  if not session.get('uid'):
+    return jsonify(result="no login")
+
+  ret = query_db('SELECT * FROM memo where idx=?', [idx,])[0]
+  userid = session.get('uid')
+  title = request.form.get('title')
+  contents = request.form.get('contents')
+
+  if ret and title and contents:
+    conn = get_db()
+    cur = conn.cursor()
+    updateRet = cur.execute("UPDATE memo SET title=?, contents=? WHERE idx=?",(title, contents, idx))
+    conn.commit()
+    if updateRet:
+      return jsonify(result="success")
+  return jsonify(result="error")
+```
+
+```python
+
+# After Patch
+@app.route('/api/memo/<int:idx>', methods=['PUT'])
+def memoUpdate(idx):
+  if not session.get('uid'):
+    return jsonify(result="no login")
+
+  ret = query_db('SELECT * FROM memo where idx=?', [idx,])[0]
+  userid = session.get('uid')
+  title = request.form.get('title')
+  contents = request.form.get('contents')
+
+  # 접근하려는 메모의 Id와 사용자 id가 같은지 확인하는 로직을 넣었어요.
+  if ret['userid'] != session.get('uid'):
+    return jsonify(result="error")
+
+  if ret and title and contents:
+    conn = get_db()
+    cur = conn.cursor()
+    updateRet = cur.execute("UPDATE memo SET title=?, contents=? WHERE idx=?",(title, contents, idx))
+    conn.commit()
+    if updateRet:
+      return jsonify(result="success")
+  return jsonify(result="error")
+```
+
+패치 한 코드를 제출한 결과에요.  
+이번에도 SLA 테스트에는 문제가 없고  
+VULN의 목록에서 IDOR이 없어졌어요.  
+이제 마지막 패치를 해볼께요.
+```
+
+[FAIL]
+
+ - SLA(7/7): SLA PASS
+ - VULN(1)
+   - SQL Injection
+```
+
+______________________________
+
+아까 하나 남았던 sql injection 취약점이에요.  
+이 endpoint에서도 마찬가지로 파라미터 바인딩을 사용하지 않고있어요.
+
+```python
+
+# Before Patch
+@app.route('/api/login', methods=['POST'])
+def login():
+  userid = request.form.get('userid', '')
+  password = request.form.get('password', '')
+  if userid and password:
+    # 만약 {userid} 부분에 **' OR 1=1 --**를 넣는다면 password 검증 부분을 전부 주석화 시켜 로그인이 가능해요.
+    # 여기도 파라미터 바인딩으로 값을 받도록 바꿔줄께요.
+    ret = query_db(f"SELECT * FROM users where userid='{userid}' and password='{hashlib.sha256(password.encode()).hexdigest()}'" , one=True)
+    if ret:
+      session['uid'] = ret[0]
+      return jsonify(result="success", userid=ret[0])
+  return jsonify(result="fail")
+```
+
+```python
+
+# After Patch
+@app.route('/api/login', methods=['POST'])
+def login():
+  userid = request.form.get('userid', '')
+  password = request.form.get('password', '')
+  pw_hash = hashlib.sha256(password.encode()).hexdigest()
+  if userid and password:
+    ret = query_db("SELECT * FROM users where userid=? and password=?", [userid, pw_hash], one=True)
+    if ret:
+      session['uid'] = ret[0]
+      return jsonify(result="success", userid=ret[0])
+  return jsonify(result="fail")
+```
+
+______________________________
+
+패치 한 코드를 제출 한 결과에요.  
+
+다른 문제를 풀 때 취약점 패치는 항상 하지만 이렇게 패치가 목적인 문제는 처음 풀어봤어요.  
+색다르고 재밌는 문제였습니다.
+<img src="/images/PATCH-1/flag.png" width="500" />
