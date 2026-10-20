@@ -74,7 +74,7 @@ export default function ContributionHeatmap({ posts }: Props) {
     <div className="rounded-2xl p-6 sm:p-8 bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/60 dark:border-white/10">
       {/* 헤더: 제목 + 연도 드롭다운 */}
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-sm font-semibold text-zinc-600 dark:text-zinc-300">씩씩하고 알차고 열심히 삽니다^!</h3>
+        <h3 className="text-sm font-semibold text-zinc-600 dark:text-zinc-300">굳세게 살자.</h3>
         <div className="relative">
           <select
             value={year}
@@ -140,16 +140,17 @@ export default function ContributionHeatmap({ posts }: Props) {
           transition: transform 0.1s ease;
         }
         .hm-cell:hover { transform: scale(1.3); }
+        /* 빈 칸(l0)은 블로그 배경 톤 유지, 채워진 칸(l1~l4)은 GitHub 잔디 공식 팔레트 */
         .hm-l0 { background: #E6E1D2; }
-        .hm-l1 { background: #A6E3B4; }
-        .hm-l2 { background: #57C777; }
-        .hm-l3 { background: #33995A; }
-        .hm-l4 { background: #1E6B3C; }
+        .hm-l1 { background: #aceebb; }
+        .hm-l2 { background: #4ac26b; }
+        .hm-l3 { background: #2da44e; }
+        .hm-l4 { background: #116329; }
         .dark .hm-l0 { background: rgba(255,255,255,0.06); }
-        .dark .hm-l1 { background: #2E5A3A; }
-        .dark .hm-l2 { background: #3F8B54; }
-        .dark .hm-l3 { background: #56B26C; }
-        .dark .hm-l4 { background: #7BD693; }
+        .dark .hm-l1 { background: #033a16; }
+        .dark .hm-l2 { background: #196c2e; }
+        .dark .hm-l3 { background: #2ea043; }
+        .dark .hm-l4 { background: #56d364; }
       `}</style>
     </div>
   );
