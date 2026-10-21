@@ -8,11 +8,9 @@ import DunningKrugerMini from "./DunningKrugerMini";
 
 // 카테고리 헤더 추가 부분
 const ctfSubcategories = ["web", "system", "forensics"];
-const snippetSubcategories = ["web", "system"]; 
 
 export default function Header() {
   const [ctfOpen, setCtfOpen] = useState(false);
-  const [snippetOpen, setSnippetOpen] = useState(false);
   const pathname = usePathname();
 
   const isActive = (prefix: string) => pathname.startsWith(prefix);
@@ -48,7 +46,7 @@ export default function Header() {
             height={32}
             viewBox="0 0 32 32"
             role="img"
-            aria-label="hwithJlog"
+            aria-label="writeup.Jlog"
             className="shrink-0"
           >
             <g fill="none" strokeLinecap="butt">
@@ -64,7 +62,7 @@ export default function Header() {
           {/* Write-Up 드롭다운 (라우트는 /ctf 그대로) */}
           <div className="relative">
             <button
-                onClick={() => { setCtfOpen(!ctfOpen); setSnippetOpen(false); }}
+                onClick={() => setCtfOpen(!ctfOpen)}
                 className={navClass("/ctf")}
               >
               Write-Up
@@ -93,7 +91,7 @@ export default function Header() {
           {/* Notes (드롭다운 없이 바로 이동) */}
           <Link
             href="/notes"
-            onClick={() => { setCtfOpen(false); setSnippetOpen(false); }}
+            onClick={() => setCtfOpen(false)}
             className={navClass("/notes")}
           >
             Notes

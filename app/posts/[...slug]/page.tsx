@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPosts } from "@/app/lib/posts";
 import rehypePrettyCode from "rehype-pretty-code";
@@ -29,16 +30,24 @@ export async function generateStaticParams() {
 }
 
 export default async function PostPage({ params, searchParams }: Props) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
   const { error } = await searchParams;
-  const filePath = path.join(process.cwd(), "app", "posts", ...slug) + ".mdx";
 
-  if (!fs.existsSync(filePath)) {
-    return (
-      <div className="max-w-3xl mx-auto pt-12">
-        <h1 className="text-2xl font-bold">페이지를 찾을 수 없습니다</h1>
-      </div>
-    );
+  // params가 퍼센트 인코딩된 채로 올 수 있어서(예: ejs@3.1.8 → ejs%403.1.8) 세그먼트별로 디코딩
+  let slug: string[];
+  try {
+    slug = rawSlug.map((s) => decodeURIComponent(s));
+  } catch {
+    notFound();
+  }
+
+  // 디코딩 후 "../"가 생겨도 app/posts 밖의 파일은 못 읽게 막음
+  const postsRoot = path.join(process.cwd(), "app", "posts");
+  const filePath = path.join(postsRoot, ...slug) + ".mdx";
+
+  // 404 상태코드로 응답 (app/not-found.tsx 렌더)
+  if (!filePath.startsWith(postsRoot + path.sep) || !fs.existsSync(filePath)) {
+    notFound();
   }
 
   const fileContents = fs.readFileSync(filePath, "utf8");
