@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "writeup.log",
+  title: "writeup.Jlog",
   description: "hwithJinsoo의 블로그",
 };
 

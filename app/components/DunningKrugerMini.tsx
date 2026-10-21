@@ -59,7 +59,7 @@ export default function DunningKrugerMini() {
           opacity-0 translate-y-1 transition-all duration-150
           group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
       >
-        우매함의 봉우리 — ( 여기라도 가보고 싶어요 )
+        우매함의 봉우리 — ( 여기라도 가보자 )
       </div>
     </div>
   );

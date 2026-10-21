@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 // kind: "cmd" = 프롬프트 뒤에 명령어 타이핑 / "out" = 출력 라인
 type Step = { kind: "cmd" | "out"; text: string; href?: string };
 
-const PROMPT = "root@writeup.log ~ %";
+const PROMPT = "root@writeup.Jlog ~ %";
 
 const SCRIPT: Step[] = [
   { kind: "cmd", text: "whoami" },
