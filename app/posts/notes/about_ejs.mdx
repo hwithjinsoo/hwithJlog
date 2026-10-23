@@ -1,0 +1,114 @@
+---
+title: "EJS 3.1.6 취약점 (CVE-2022-29078)"
+date: "2026-10-21"
+category: "notes"
+subcategory: "auth"
+description: "CVE-2022-29078"
+---
+
+## about CVE-2022-29078
+ejs 3.1.6 이하에서 발생하는 취약점으로 ejs 구조와  
+개발자의 부주의한 코드가 합작해 발생할 수 있는 취약점이에요.
+
+이 취약점은 미흡한 사용자 입력 검증으로 인해 공격할 입구가 열렸고  
+ejs 라이브러리의 코드 로직이 시너지를 일으켜 결국 RCE까지 발생하게 된 취약점이에요.
+______________________________
+
+## 문제의 코드 
+
+다음은 ejs 라이브러리의 코드 일부입니다. 이 코드중 어디가 취약하며  
+이 때문에 어떤 취약점이 발생하는지 알아볼께요.
+```javascript
+
+  if (typeof arguments[arguments.length - 1] == 'function') {
+    cb = args.pop();
+  }
+  // Do we have data/opts?
+  if (args.length) {
+    // Should always have data obj
+    data = args.shift();
+    // Normal passed opts (data obj + opts obj)
+    if (args.length) {
+      // Use shallowCopy so we don't pollute passed in opts obj with new vals
+      utils.shallowCopy(opts, args.pop());
+    }
+    // Special casing for Express (settings + opts-in-data)
+    else {
+      // Express 3 and 4
+      if (data.settings) {
+        // Pull a few things from known locations
+        if (data.settings.views) {
+          opts.views = data.settings.views;
+        }
+        if (data.settings['view cache']) {
+          opts.cache = true;
+        }
+        // Undocumented after Express 2, but still usable, esp. for
+        // items that are unsafe to be passed along with data, like `root`
+        viewOpts = data.settings['view options'];
+        if (viewOpts) {
+          utils.shallowCopy(opts, viewOpts);
+        }
+      }
+      // Express 2 and lower, values set in app.locals, or people who just
+      // want to pass options in their data. NOTE: These values will override
+      // anything previously set in settings  or settings['view options']
+      utils.shallowCopyFromList(opts, data, _OPTS_PASSABLE_WITH_DATA_EXPRESS);
+    }
+```
+______________________________
+
+## 취약점 발생 과정
+
+### 취약점의 시작
+이와 같은 코드처럼 사용자의 입력을 그대로 넘겨주는게 취약점의 시작이에요.  
+해당 코드로 사용자에게 받은 파라미터를 템플릿에 넘겨줬다 가정하고 시작할께요.
+```javascript
+
+app.get('/', (req, res) => {
+   res.render('index', req.query )
+})
+```
+
+______________________________
+
+### 뚫리는 과정
+사용자에게 req.query를 받고 그대로 템플릿에 넘기면  
+ejs의 라이브러리가 아래와 같은 로직을 수행해요.
+1. viewOpts에 settings['view options']를 저장해요.
+2. 만약 viewOpts에 값이 있다면 해당 값을 opts에 복사해요.
+
+이 로직이 또 하나의 취약점이에요.  
+사용자 입력을 검증하지 않기에 어떤 값이 있는지 모르는 req.query 값을  
+여기서도 검증하나 없이 그저 **값이 들어있다면** options에 값을 복사해요.
+
+이게 왜 취약한지 아래에서 다른 코드와 함께 설명할께요.
+
+```javascript
+
+viewOpts = data.settings['view options'];
+if (viewOpts) {
+    utils.shallowCopy(opts, viewOpts);
+}
+```
+______________________________
+
+위에서 얘기한 **utils.shallowCopy(opts, viewOpts);** 코드가 취약해진 이유는   
+아래와 같은 코드 때문이에요.  
+
+로직을 보면 'opts'에 **'outputFunctionName'**옵션이 있다면  
+prepended에 opts.outputFunctionName의 값을 통채로 집어넣어요.  
+
+**outputFunctionName** 옵션의 원래 기능은 내부 함수의 기존 이름이 아닌  
+다른 이름을 사용하고자 할 때 쓰는 옵션이에요.  
+문제는 검증 없이 입력 된 문자열 그대로 이어 붙인다는거에요.
+
+```javascript
+
+ if (opts.outputFunctionName) {
+        prepended += '  var ' + opts.outputFunctionName + ' = __append;' + '\n';
+      }
+```
+______________________________
+
+최종적으로 공격자는 스크립트를 서버에서 실행할 수 있어요. (RCE)

@@ -33,6 +33,13 @@ body {
   position: relative;
   overflow-x: auto;
   max-width: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* figure가 overflow:auto라 안쪽 pre 여백이 합쳐지지 않고 더해짐(32+24px) → 여백은 figure에만 */
+[data-rehype-pretty-code-figure] pre {
+  margin: 0;
 }
 
 pre {
@@ -107,6 +114,30 @@ code {
   font-size: 0.875rem;
   line-height: 1.5;
   color: #d4d4d4;
+}
+
+/* MDX 본문 간격
+   typography 기본값은 문단·목록·인용 위아래 1.25em, 구분선 3em이라
+   줄 끝 공백 두 칸(<br>)으로만 줄바꿈한 평문과 간격 차이가 너무 커서 줄임 */
+.prose :where(p, ul, ol, blockquote):not(:where([class~="not-prose"] *)) {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+.prose :where(li):not(:where([class~="not-prose"] *)) {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+}
+.prose :where(h2):not(:where([class~="not-prose"] *)) {
+  margin-top: 1.75em;
+  margin-bottom: 0.75em;
+}
+.prose :where(h3):not(:where([class~="not-prose"] *)) {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.prose :where(hr):not(:where([class~="not-prose"] *)) {
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 /* MDX 스타일 선언 */

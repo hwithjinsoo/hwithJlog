@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalHeader from "./components/ConditionalHeader";
 import BlobBackground from "./components/BlobBackground";
+import ThemeSync from "./components/ThemeSync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-full">
+        <ThemeSync />
         <BlobBackground />
         <ConditionalHeader />
         {children}
