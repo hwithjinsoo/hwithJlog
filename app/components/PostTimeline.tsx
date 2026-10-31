@@ -5,20 +5,26 @@ import { useEffect, useRef, useState } from "react";
 import { Post } from "@/app/lib/posts";
 import { categoryColor } from "@/app/lib/categoryColors";
 
-// 화면에 한 번에 보여줄 카드 수 (이 이상은 내부 스크롤)
-const VISIBLE = 5;
+// 화면에 한 번에 보여줄 카드 수 기본값 (이 이상은 내부 스크롤)
+const DEFAULT_VISIBLE = 5;
 // 위/아래 가장자리 페이드 길이(px)
 const FADE = 56;
 
 type Props = {
   posts: Post[];
+  // true면 부모 높이를 꽉 채우고 넘치는 카드는 내부 스크롤 (홈 Notes/CVE를 Write-Up 열 높이에 맞출 때)
+  // md 미만(한 열로 쌓일 때)은 부모 높이가 없으니 기존처럼 카드 visible개 높이로 제한
+  fill?: boolean;
+  // 한 번에 보여줄 카드 수 (기본 5개, 넘치면 내부 스크롤)
+  visible?: number;
 };
 
-export default function PostTimeline({ posts }: Props) {
+export default function PostTimeline({ posts, fill = false, visible = DEFAULT_VISIBLE }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [maxH, setMaxH] = useState<number | undefined>(undefined);
   const [atTop, setAtTop] = useState(true);
   const [atBottom, setAtBottom] = useState(false);
+  const [overflowing, setOverflowing] = useState(false);
   const [dark, setDark] = useState(false);
 
   // <html>의 .dark 클래스 감지 (테마 토글 시 점 색 실시간 반영)
@@ -37,26 +43,41 @@ export default function PostTimeline({ posts }: Props) {
     if (!el) return;
     setAtTop(el.scrollTop <= 1);
     setAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
+    setOverflowing(el.scrollHeight > el.clientHeight + 1);
   };
 
-  // 카드 5개 높이 + 6번째 카드 절반 정도만 열어둔다 (절반은 페이드로 반투명 힌트)
+  // 박스 높이가 바뀔 때(창 크기, 옆 열 높이 변화)마다 넘침/페이드 상태 다시 계산
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(updateEdges);
+    ro.observe(el);
+    // 카드 등장 애니메이션(translateY 14px) 중엔 잠깐 넘치는 것으로 계산되므로, 끝나면 다시 계산
+    el.addEventListener("transitionend", updateEdges);
+    return () => {
+      ro.disconnect();
+      el.removeEventListener("transitionend", updateEdges);
+    };
+  }, [posts]);
+
+  // 카드 visible개 높이 + 그다음 카드 절반 정도만 열어둔다 (절반은 페이드로 반투명 힌트)
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
     const measure = () => {
       const cards = Array.from(el.querySelectorAll<HTMLElement>("[data-card]"));
-      // 5개 이하면 스크롤 필요 없음 → 높이 제한/페이드 해제
-      if (cards.length <= VISIBLE) {
+      // visible개 이하면 스크롤 필요 없음 → 높이 제한/페이드 해제
+      if (cards.length <= visible) {
         setMaxH(undefined);
         return;
       }
       const gap = 20; // flex gap-5 == 20px
       let h = 0;
-      for (let i = 0; i < VISIBLE; i++) h += cards[i].offsetHeight;
-      h += gap * VISIBLE; // 5번째 뒤 간격까지 포함
-      // 6번째 카드를 절반쯤 걸쳐 보이게
-      const peek = Math.round((cards[VISIBLE]?.offsetHeight ?? 90) * 0.5);
+      for (let i = 0; i < visible; i++) h += cards[i].offsetHeight;
+      h += gap * visible; // 마지막 보이는 카드 뒤 간격까지 포함
+      // 그다음 카드를 절반쯤 걸쳐 보이게
+      const peek = Math.round((cards[visible]?.offsetHeight ?? 90) * 0.5);
       h += peek;
       setMaxH(Math.round(h));
       requestAnimationFrame(updateEdges);
@@ -65,7 +86,7 @@ export default function PostTimeline({ posts }: Props) {
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, [posts]);
+  }, [posts, visible]);
 
   // 카드가 스크롤 박스 안으로 들어올 때마다 매번 fade + slide 재생
   useEffect(() => {
@@ -105,9 +126,8 @@ export default function PostTimeline({ posts }: Props) {
   }
 
   // 스크롤 가능할 때만 가장자리 페이드 적용 (위: 스크롤 내렸을 때만, 아래: 끝 아닐 때만)
-  const scrollable = maxH !== undefined;
   let maskImage: string | undefined;
-  if (scrollable) {
+  if (overflowing) {
     const stops: string[] = [];
     stops.push(atTop ? "#000 0" : "transparent 0");
     if (!atTop) stops.push(`#000 ${FADE}px`);
@@ -120,9 +140,12 @@ export default function PostTimeline({ posts }: Props) {
     <div
       ref={scrollRef}
       onScroll={updateEdges}
-      className="tl-scroll overflow-y-auto pr-1"
+      // pl-3 -ml-3: 점의 빛(box-shadow)이 스크롤 박스 왼쪽 경계에서 잘리지 않게 여유를 두고, 위치는 그대로
+      className={`tl-scroll overflow-y-auto pr-1 pl-3 -ml-3 ${fill ? "md:h-full max-md:[max-height:var(--tl-max)]" : ""}`}
       style={{
-        maxHeight: maxH ? `${maxH}px` : undefined,
+        ...(fill
+          ? ({ "--tl-max": maxH ? `${maxH}px` : "none" } as React.CSSProperties)
+          : { maxHeight: maxH ? `${maxH}px` : undefined }),
         maskImage,
         WebkitMaskImage: maskImage,
       }}
@@ -134,11 +157,8 @@ export default function PostTimeline({ posts }: Props) {
 
         <div className="flex flex-col gap-5">
           {posts.map((post) => {
-            // Notes는 태그가 제각각이라 카테고리 색 하나로 통일
-            const dotColor = categoryColor(
-              post.category === "notes" ? "notes" : post.subcategory,
-              dark
-            );
+            // 라벨은 게시판(Write-Up/Notes/CVE)별 색, 점은 모두 같은 빛나는 흰 점(.tl-dot)
+            const labelColor = categoryColor(post.category, dark);
             return (
               <Link
                 key={post.slug.join("/")}
@@ -147,12 +167,9 @@ export default function PostTimeline({ posts }: Props) {
                 className="tl-card relative block group"
               >
                 {/* 타임라인 점 */}
-                <span
-                  className="absolute -left-5 top-4 w-3 h-3 rounded-full border-2 transition-transform group-hover:scale-125 z-10"
-                  style={{ backgroundColor: dotColor, borderColor: "var(--page-bg)" }}
-                />
+                <span className="tl-dot absolute -left-5 top-4 m-0.5 w-2 h-2 rounded-full group-hover:scale-125 z-10" />
                 <div className="p-4 bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10 rounded-xl group-hover:bg-white/60 dark:group-hover:bg-white/10 transition-colors">
-                  <p className="text-xs mb-1 font-medium" style={{ color: dotColor }}>
+                  <p className="text-xs mb-1 font-medium" style={{ color: labelColor }}>
                     {post.subcategory || post.category}
                   </p>
                   <p className="text-sm font-medium leading-snug">{post.title}</p>
@@ -165,6 +182,17 @@ export default function PostTimeline({ posts }: Props) {
       </div>
 
       <style>{`
+        /* 타임라인 점: 흰색에 가까운 밝은 회색, 테두리 없이 점 가장자리에서 바로 옅어지는 은은한 빛
+           (spread 0 → 점 경계에서 빛이 시작돼서 테두리처럼 보이는 경계선이 안 생김) */
+        .tl-dot {
+          background-color: #e7e5e4;
+          box-shadow: 0 0 5px 0 rgba(231, 229, 228, 0.35);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        /* 카드에 마우스를 올리면 살짝 더 밝게 */
+        .group:hover .tl-dot {
+          box-shadow: 0 0 7px 0 rgba(231, 229, 228, 0.5);
+        }
         .tl-card {
           opacity: 0;
           transform: translateY(14px);

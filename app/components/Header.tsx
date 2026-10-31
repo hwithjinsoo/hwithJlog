@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import ThemeToggle from "./ThemeToggle";
 import DunningKrugerMini from "./DunningKrugerMini";
 
 // 카테고리 헤더 추가 부분
@@ -97,11 +96,18 @@ export default function Header() {
             Notes
           </Link>
 
-          {/* 다크모드 토글 */}
-          {/* 우측 묶음: (홈에서만) 더닝-크루거 미니 그래프 + 테마 토글 */}
+          {/* CVE 분석 글 */}
+          <Link
+            href="/cve"
+            onClick={() => setCtfOpen(false)}
+            className={navClass("/cve")}
+          >
+            CVE
+          </Link>
+
+          {/* 우측: (홈에서만) 더닝-크루거 미니 그래프 */}
           <div className="ml-auto flex items-center gap-3">
             {pathname === "/" && <DunningKrugerMini />}
-            <ThemeToggle />
           </div>
         </nav>
       </div>

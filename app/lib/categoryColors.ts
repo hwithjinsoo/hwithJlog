@@ -1,18 +1,20 @@
-// 카테고리(subcategory)별 대표 색.
-// 그래프(CTFGraph)와 사이드바(PostTimeline)가 항상 같은 색을 쓰도록 여기 한 곳에서 관리한다.
-// 무드보드(버건디/러스트/슬레이트) 기반. 원본은 너무 어두워 라인/점으로 안 보이므로
-// 무드는 유지하되 라이트/다크 배경에서 보이도록 밝기·채도를 테마별로 조정.
+// 게시판(category)별 대표 색. CTF 하위(web/system/forensics)는 Write-Up 색 하나로 통일.
+// 사이드바(PostTimeline) 점·라벨 색을 여기 한 곳에서 관리한다.
+// 사이드바 카드 라벨(web, auth 등) 색. 게시판 구분 없이 모래색 하나로 통일.
+// (게시판별로 다시 나누고 싶으면 여기 값만 바꾸면 됨)
+// 블로그가 다크모드 전용이라 light/dark 값은 같게 둔다.
+const LABEL = { light: "#C9A27E", dark: "#C9A27E" }; // 모래
+
 export const categoryColors = {
-  web:       { light: "#A83A52", dark: "#D66E86" }, // 와인 / 버건디
-  system:    { light: "#3F6E97", dark: "#86A8CB" }, // 슬레이트 블루
-  forensics: { light: "#BE6420", dark: "#DE9A4E" }, // 러스트 / 번트 오렌지
-  notes:     { light: "#4E7D5B", dark: "#7FB08C" }, // 세이지 그린 (Notes 전용)
+  ctf:   LABEL, // Write-Up
+  notes: LABEL, // Notes
+  cve:   LABEL, // CVE
 } as const;
 
 const fallback = { light: "#8a8a8a", dark: "#9a9a9a" };
 
 // 카테고리 + 현재 테마에 맞는 색을 돌려준다.
-export function categoryColor(sub: string, dark: boolean): string {
-  const c = (categoryColors as Record<string, { light: string; dark: string }>)[sub] ?? fallback;
+export function categoryColor(category: string, dark: boolean): string {
+  const c = (categoryColors as Record<string, { light: string; dark: string }>)[category] ?? fallback;
   return dark ? c.dark : c.light;
 }
