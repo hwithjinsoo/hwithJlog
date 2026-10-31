@@ -9,8 +9,6 @@ type Step = { kind: "cmd" | "out"; text: string; href?: string };
 const PROMPT = "root@writeup.Jlog ~ %";
 
 const SCRIPT: Step[] = [
-  { kind: "cmd", text: "whoami" },
-  { kind: "out", text: "열심히 살아가는 학생이에요" },
   { kind: "cmd", text: "cat github.txt" },
   { kind: "out", text: "https://github.com/hwithjinsoo", href: "https://github.com/hwithjinsoo" },
   { kind: "cmd", text: "cat about.md" },
