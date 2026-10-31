@@ -11,7 +11,8 @@ export default function DunningKrugerMini() {
     // hover뿐 아니라 키보드 포커스로도 보이게 tabIndex + focus-within 사용
     <div
       tabIndex={0}
-      className="group relative hidden sm:flex items-center outline-none"
+      // translate-x-3: 헤더 오른쪽 끝에서 살짝 더 오른쪽으로
+      className="group relative hidden sm:flex items-center outline-none translate-x-3"
       aria-describedby="dk-tooltip"
     >
       <svg
@@ -42,7 +43,7 @@ export default function DunningKrugerMini() {
         <circle
           cx={PEAK.x}
           cy={PEAK.y}
-          r={3.6}
+          r={2.6}
           fill="#ffffff"
           className="stroke-black/15 dark:stroke-transparent"
           strokeWidth={1}
@@ -59,7 +60,6 @@ export default function DunningKrugerMini() {
           opacity-0 translate-y-1 transition-all duration-150
           group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
       >
-        우매함의 봉우리 — ( 여기라도 가보자 )
       </div>
     </div>
   );
