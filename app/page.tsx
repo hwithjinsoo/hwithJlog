@@ -28,14 +28,14 @@ export default function Home() {
       </div>
 
       {/* 오른쪽 사이드바 2열 - 타임라인 형태
-          - Write-Up: 5개까지 보이고 나머지는 내부 스크롤 → 이 열 높이가 사이드바 높이 기준
+          - Write-Up: 4개 + 5번째 반쯤 보이고 나머지는 내부 스크롤 → 이 열 높이가 사이드바 높이 기준
           - Notes/CVE: 위아래로 쌓고, 둘을 합친 높이를 Write-Up 열과 같게
             Notes는 2개까지 보이고 나머지는 내부 스크롤, CVE는 남은 높이를 채우고 넘치면 내부 스크롤
             md 이상에선 absolute로 띄워서 자기 내용 높이가 행 높이를 늘리지 않게 함 */}
       <div className="w-full min-[1380px]:w-auto shrink-0 grid grid-cols-1 md:grid-cols-2 min-[1380px]:flex gap-7 min-[1380px]:sticky min-[1380px]:top-8">
         <aside className="min-w-0 min-[1380px]:w-64">
           <h2 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mb-4">Write-Up</h2>
-          <PostTimeline posts={ctfPosts} />
+          <PostTimeline posts={ctfPosts} visible={4} />
         </aside>
         <aside className="relative min-w-0 min-[1380px]:w-64">
           <div className="flex flex-col gap-7 md:absolute md:inset-0">

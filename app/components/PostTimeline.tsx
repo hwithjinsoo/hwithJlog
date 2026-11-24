@@ -173,6 +173,12 @@ export default function PostTimeline({ posts, fill = false, visible = DEFAULT_VI
                     {post.subcategory || post.category}
                   </p>
                   <p className="text-sm font-medium leading-snug">{post.title}</p>
+                  {post.description && (
+                    // 한 줄로만 보여주고 넘치면 말줄임(…), 전체 내용은 마우스를 올리면 툴팁으로
+                    <p className="text-xs text-zinc-400 mt-1 truncate" title={post.description}>
+                      {post.description}
+                    </p>
+                  )}
                   <p className="text-xs text-zinc-400 mt-2">{post.date}</p>
                 </div>
               </Link>

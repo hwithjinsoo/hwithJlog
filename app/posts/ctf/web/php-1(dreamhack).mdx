@@ -1,0 +1,66 @@
+---
+title: "php-1 (dreamhack)"
+date: "2026-11-24"
+category: "ctf"
+subcategory: "web"
+description: "LFI 취약점을 이용해 플래그를 획득하세요. 플래그는 /var/www/uploads/flag.php에 있습니다."
+---
+______________________________
+
+## Challenge Analysis
+description에서 말한대로 LFI를 이용해서 푸는 문제에요.  
+해당 취약점은 공부한 적이 있어서 빠르게 풀었어요.
+
+## source code analyze
+
+/view의 소스코드에요. 특정 파일의 내용을 화면에 띄워주는 역할을 수행하고 있어요. 
+
+소스 코드를 보기전까지 여기에 flag.php의 내용을 띄우면 되겠다 생각해, 페이로드를 주입했는데 Permission denied가 뜨길래 확인해보니  
+flag 문자열을 대소문자 구분 없이. 그리고 ":" 까지 필터링 하고 있었어요.  
+페이로드로 **php:filter**를 주입했었고 resource 부분에도 **flag.php"가 들어가니 필터링이 되고 있어요.
+
+따라서 필터를 우회하기 위해 flag와 ":"을 모두 더블 인코딩 한 뒤 페이로드를 넣은 것도 실패했는데   
+flag는 GET에서 한 번 디코딩 되면서 필터링을 우회 했으며, **file_get_contents**에서도 디코딩 되기에 결국  
+flag 문자가 완성이 돼요. 따라서 이건 문제가 없어요.
+
+스캠인 php:filter는 GET에서 디코딩 되며 필터링 우회까지는 되지만, file_get_contents에서 디코딩 되지는 않기에  
+결과가 **php%3A**로 나와요.  
+<small>만약 스캠만 인코딩 한 번 한다해도 필터링에 걸려요.</small>
+
+따라서 /view에서는 flag 읽기가 불가능하다 생각하고 다른 페이지를 찾아봤어요.
+```php
+
+<h2>View</h2>
+<pre><?php
+    $file = $_GET['file']?$_GET['file']:'';
+    if(preg_match('/flag|:/i', $file)){
+        exit('Permission denied');
+    }
+    echo file_get_contents($file);
+?>
+</pre>
+```
+______________________________
+
+해당 코드는 /index.php 소스의 일부에요.  
+보면 **'page'**를 별다른 필터링 없이 .php를 뒤에 붙인 뒤 include 하고 있어요.
+
+문제에서 flag가 들어있는 파일 이름이 **flag.php**라 했으니 .php만 빼고 페이로드를 주입 했어요.
+
+```php
+
+    <div class="container">
+      <?php
+          include $_GET['page']?$_GET['page'].'.php':'main.php';
+      ?>
+    </div> 
+```
+
+______________________________
+
+다음과 같이 페이로드를 입력하면 base64로 인코딩 된 flag.php의 내용이 출력돼요.
+```
+
+http://~~~/?page=php://filter/convert.base64-encode/resource=/var/www/uploads/flag
+```
+<img src="/images/php1/flag.png" width="500" />

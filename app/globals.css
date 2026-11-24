@@ -141,6 +141,8 @@ code {
 }
 
 /* MDX 스타일 선언 */
+
+/* ## 제목 앞 점(•) — 2026-10-31 비활성화
 .prose h2::before {
   content: "• ";
   color: black;
@@ -153,6 +155,16 @@ code {
 
 .dark .prose h2,
 .dark .prose h2::before {
+  color: #d8a878;
+}
+*/
+
+/* ## 제목 색 (점 없는 버전) */
+.prose h2 {
+  color: #A06B3A;
+}
+
+.dark .prose h2 {
   color: #d8a878;
 }
 
