@@ -9,9 +9,8 @@ type Step = { kind: "cmd" | "out"; text: string; href?: string };
 const PROMPT = "root@writeup.Jlog ~ %";
 
 const SCRIPT: Step[] = [
-  { kind: "cmd", text: "which ai"},
-  { kind: "out", text: "ai not found"},
-  { kind: "out", text: "공부할 때만 사용하고 라이트업과 풀이는 직접해요"},
+  { kind: "cmd", text: "cat rules"},
+  { kind: "out", text: "에이전트는 공부할 때만 사용하고 라이트업과 풀이는 직접해요"},
   { kind: "cmd", text: "cat github.txt" },
   { kind: "out", text: "https://github.com/hwithjinsoo", href: "https://github.com/hwithjinsoo" },
   { kind: "cmd", text: "cat about.md" },

@@ -7,14 +7,8 @@ const PEAK = { x: 17, y: 6 };
 
 export default function DunningKrugerMini() {
   return (
-    // 기본 title 툴팁은 스타일을 못 바꿔서, 헤더 드롭다운과 같은 반투명 카드로 직접 띄운다.
-    // hover뿐 아니라 키보드 포커스로도 보이게 tabIndex + focus-within 사용
-    <div
-      tabIndex={0}
-      // translate-x-3: 헤더 오른쪽 끝에서 살짝 더 오른쪽으로
-      className="group relative hidden sm:flex items-center outline-none translate-x-3"
-      aria-describedby="dk-tooltip"
-    >
+    // translate-x-3: 헤더 오른쪽 끝에서 살짝 더 오른쪽으로
+    <div className="hidden sm:flex items-center translate-x-3">
       <svg
         width={88}
         height={32}
@@ -49,18 +43,6 @@ export default function DunningKrugerMini() {
           strokeWidth={1}
         />
       </svg>
-
-      {/* 커스텀 툴팁: 그래프 아래, 화면 밖으로 안 나가게 오른쪽 끝 기준 정렬 */}
-      <div
-        id="dk-tooltip"
-        role="tooltip"
-        className="pointer-events-none absolute right-0 top-full mt-1.5 z-20 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[11px] leading-tight
-          bg-white/40 dark:bg-zinc-800/80 backdrop-blur-sm border border-white/40 dark:border-white/10
-          text-zinc-600 dark:text-zinc-300 shadow-sm
-          opacity-0 translate-y-1 transition-all duration-150
-          group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
-      >
-      </div>
     </div>
   );
 }
